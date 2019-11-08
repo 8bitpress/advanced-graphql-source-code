@@ -1,0 +1,30 @@
+# editor
+
+.vs
+.vscode
+
+# node
+
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# misc
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+*[Tt]humbs.db
+*.Trashes
+
+# environment
+
+.env 
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
