@@ -1,30 +1,10 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { ApolloServer, gql } from "apollo-server-express";
-import express from "express";
+import server from "./config/apollo";
+import app from "./config/app";
 
 const port = process.env.PORT;
-const app = express();
-
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello() {
-      return "world";
-    }
-  }
-};
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
 
 server.applyMiddleware({ app });
 
