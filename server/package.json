@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r esm ./src/index.js"
+    "dev": "nodemon -r dotenv/config -r esm ./src/index.js"
   },
   "keywords": [],
   "author": "",
