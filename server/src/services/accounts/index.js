@@ -1,4 +1,5 @@
 import { ApolloServer } from "apollo-server";
+import { buildFederatedSchema } from "@apollo/federation";
 
 import resolvers from "./resolvers";
 import typeDefs from "./typeDefs";
@@ -7,8 +8,7 @@ import typeDefs from "./typeDefs";
   const port = process.env.ACCOUNTS_SERVICE_PORT;
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers
+    schema: buildFederatedSchema([{ typeDefs, resolvers }])
   });
 
   const { url } = await server.listen({ port });
