@@ -1,7 +1,20 @@
+const accounts = [
+  {
+    id: "1",
+    email: "devchirps@mandiwise.com"
+  }
+];
+
 const resolvers = {
+  Account: {
+    __resolveReference(reference) {
+      return accounts.find(account => account.id === reference.id);
+    }
+  },
+
   Query: {
-    hello() {
-      return "world";
+    viewer() {
+      return accounts[0];
     }
   }
 };
