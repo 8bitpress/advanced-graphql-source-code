@@ -7,7 +7,11 @@ const gateway = new ApolloGateway({
 
 const server = new ApolloServer({
   gateway,
-  subscriptions: false
+  subscriptions: false,
+  context: ({ req }) => {
+    const user = req.user || null;
+    return { user };
+  }
 });
 
 export default server;
