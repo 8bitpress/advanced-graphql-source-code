@@ -10,15 +10,28 @@ const accounts = [
 const resolvers = {
   Account: {
     __resolveReference(reference) {
-      return accounts.find(account => account.id === reference.id);
+      return auth0.getUser({ id: reference.id });
+    },
+    id(account, args, context, info) {
+      return account.user_id;
+    },
+    createdAt(account, args, context, info) {
+      return account.created_at;
     }
   },
 
   Query: {
-    async viewer(parent, args, { user }, info) {
-      const viewer = await auth0.getUser({ id: user.sub });
-      console.log(viewer);
-      return accounts[0];
+    account(_, { id }, context, info) {
+      return auth0.getUser({ id });
+    },
+    accounts(parent, args, context, info) {
+      return auth0.getUsers();
+    },
+    viewer(parent, args, { user }, info) {
+      if (user && user.sub) {
+        return auth0.getUser({ id: user.sub });
+      }
+      return null;
     }
   }
 };
