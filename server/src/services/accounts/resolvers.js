@@ -1,12 +1,5 @@
 import auth0 from "../../config/auth0";
 
-const accounts = [
-  {
-    id: "1",
-    email: "devchirps@mandiwise.com"
-  }
-];
-
 const resolvers = {
   Account: {
     __resolveReference(reference) {
