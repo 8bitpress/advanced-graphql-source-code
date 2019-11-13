@@ -7,10 +7,34 @@ const typeDefs = gql`
     email: String!
   }
 
+  input AccountWhereUniqueInput {
+    id: ID!
+  }
+
+  input CreateAccountInput {
+    email: String!
+    password: String!
+  }
+
+  input UpdateAccountInput {
+    email: String
+    newPassword: String
+    password: String
+  }
+
   extend type Query {
     account(id: ID!): Account!
     accounts: [Account]
     viewer: Account
+  }
+
+  extend type Mutation {
+    createAccount(data: CreateAccountInput!): Account!
+    deleteAccount(where: AccountWhereUniqueInput!): Boolean!
+    updateAccount(
+      data: UpdateAccountInput!
+      where: AccountWhereUniqueInput!
+    ): Account!
   }
 `;
 
