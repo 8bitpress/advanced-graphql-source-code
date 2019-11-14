@@ -13,6 +13,13 @@ const resolvers = {
     },
     createdAt(account, args, context, info) {
       return account.created_at;
+    },
+    isModerator(account, args, context, info) {
+      return (
+        account.app_metadata &&
+        account.app_metadata.roles &&
+        account.app_metadata.roles.includes("moderator")
+      );
     }
   },
 
