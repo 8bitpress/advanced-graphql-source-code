@@ -41,6 +41,19 @@ const resolvers = {
   Mutation: {
     createAccount(parent, { data: { email, password } }, context, info) {
       return auth0.createUser({
+        app_metadata: {
+          groups: [],
+          roles: ["author"],
+          permissions: [
+            "read:own_account",
+            "edit:own_account",
+            "read:any_profile",
+            "edit:own_profile",
+            "read:any_content",
+            "edit:own_content",
+            "upload:own_media"
+          ]
+        },
         connection: "Username-Password-Authentication",
         email,
         password
