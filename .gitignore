@@ -31,4 +31,4 @@ ehthumbs.db
 
 # server
 
-server/src/scripts/getToken.js
+server/src/scripts/authenticateUser.js

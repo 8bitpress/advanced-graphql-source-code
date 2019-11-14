@@ -1,10 +1,7 @@
 import { UserInputError } from "apollo-server";
-import request from "request";
-import util from "util";
 
 import auth0 from "../../config/auth0";
-
-const requestPromise = util.promisify(request);
+import getToken from "../../lib/getToken";
 
 const resolvers = {
   Account: {
@@ -35,28 +32,14 @@ const resolvers = {
   },
 
   Mutation: {
-    createAccount(
-      parent,
-      {
-        data: { email, password }
-      },
-      context,
-      info
-    ) {
+    createAccount(parent, { data: { email, password } }, context, info) {
       return auth0.createUser({
         connection: "Username-Password-Authentication",
         email,
         password
       });
     },
-    async deleteAccount(
-      parent,
-      {
-        where: { id }
-      },
-      context,
-      info
-    ) {
+    async deleteAccount(parent, { where: { id } }, context, info) {
       try {
         await auth0.deleteUser({ id });
         return true;
@@ -66,10 +49,7 @@ const resolvers = {
     },
     async updateAccount(
       parent,
-      {
-        data: { email, newPassword, password },
-        where: { id }
-      },
+      { data: { email, newPassword, password }, where: { id } },
       context,
       info
     ) {
@@ -88,34 +68,14 @@ const resolvers = {
       }
 
       if (!email) {
-        const user = await auth0.getUser({ id });
-
-        const options = {
-          method: "POST",
-          url: `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
-          headers: { "content-type": "application/x-www-form-urlencoded" },
-          form: {
-            grant_type: "http://auth0.com/oauth/grant-type/password-realm",
-            realm: "Username-Password-Authentication",
-            username: user.email,
-            password,
-            audience: process.env.AUTH0_AUDIENCE,
-            client_id: process.env.AUTH0_CLIENT_ID_GRAPHQL,
-            client_secret: process.env.AUTH0_CLIENT_SECRET_GRAPHQL,
-            scope: "openid"
-          }
-        };
-
-        const response = await requestPromise(options);
-        const body = JSON.parse(response.body);
-
-        if (body.access_token) {
-          return auth0.updateUser({ id }, { password: newPassword });
-        } else {
-          throw new UserInputError(
-            body.error_description || "User account could not be verified."
-          );
+        try {
+          const user = await auth0.getUser({ id });
+          await getToken(user.email, password);
+        } catch (error) {
+          throw new UserInputError(error);
         }
+
+        return auth0.updateUser({ id }, { password: newPassword });
       }
 
       return auth0.updateUser({ id }, { email });
