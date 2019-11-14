@@ -5,11 +5,20 @@ const typeDefs = gql`
     id: ID!
     createdAt: String!
     email: String!
+    isBlocked: Boolean
     isModerator: Boolean
   }
 
   input AccountWhereUniqueInput {
     id: ID!
+  }
+
+  input BlockAccountInput {
+    isBlocked: Boolean!
+  }
+
+  input ChangeAccountModeratorRoleInput {
+    isModerator: Boolean!
   }
 
   input CreateAccountInput {
@@ -30,6 +39,14 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
+    blockAccount(
+      data: BlockAccountInput!
+      where: AccountWhereUniqueInput!
+    ): Account!
+    changeAccountModeratorRole(
+      data: ChangeAccountModeratorRoleInput!
+      where: AccountWhereUniqueInput!
+    ): Account!
     createAccount(data: CreateAccountInput!): Account!
     deleteAccount(where: AccountWhereUniqueInput!): Boolean!
     updateAccount(
