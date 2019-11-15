@@ -22,6 +22,8 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "graphql": "^14.5.8",
+    "graphql-middleware": "^4.0.2",
+    "graphql-shield": "^7.0.2",
     "jwks-rsa": "^1.6.0"
   },
   "devDependencies": {
