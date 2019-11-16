@@ -1,15 +1,11 @@
-import { UserInputError } from "apollo-server";
-
 import { DateTimeResolver } from "../../lib/customScalars";
-import auth0 from "../../config/auth0";
-import getToken from "../../lib/getToken";
 
 const resolvers = {
   DateTime: DateTimeResolver,
 
   Account: {
-    __resolveReference(reference) {
-      return auth0.getUser({ id: reference.id });
+    __resolveReference(reference, { dataSources }) {
+      return dataSources.accountsAPI.getAccountById(reference.id);
     },
     id(account, args, context, info) {
       return account.user_id;
@@ -30,15 +26,15 @@ const resolvers = {
   },
 
   Query: {
-    account(_, { id }, context, info) {
-      return auth0.getUser({ id });
+    account(_, { id }, { dataSources }, info) {
+      return dataSources.accountsAPI.getAccountById(id);
     },
-    accounts(parent, args, context, info) {
-      return auth0.getUsers();
+    accounts(parent, args, { dataSources }, info) {
+      return dataSources.accountsAPI.getAccounts();
     },
-    viewer(parent, args, { user }, info) {
+    viewer(parent, args, { dataSources, user }, info) {
       if (user && user.sub) {
-        return auth0.getUser({ id: user.sub });
+        return dataSources.accountsAPI.getAccountById(user.sub);
       }
       return null;
     }
@@ -48,103 +44,35 @@ const resolvers = {
     blockAccount(
       parent,
       { data: { isBlocked }, where: { id } },
-      context,
+      { dataSources },
       info
     ) {
-      return auth0.updateUser({ id }, { blocked: isBlocked });
+      return dataSources.accountsAPI.blockAccount(id, isBlocked);
     },
     changeAccountModeratorRole(
       parent,
       { data: { isModerator }, where: { id } },
-      context,
+      { dataSources },
       info
     ) {
-      const authorPermissions = [
-        "read:own_account",
-        "edit:own_account",
-        "read:any_profile",
-        "edit:own_profile",
-        "read:any_content",
-        "edit:own_content",
-        "upload:own_media"
-      ];
-      const moderatorPermissions = [
-        "read:any_account",
-        "block:any_accounts",
-        "promote:any_accounts",
-        "block:any_content"
-      ];
-
-      let roles = isModerator ? ["moderator"] : ["author"];
-      let permissions = isModerator
-        ? authorPermissions.concat(moderatorPermissions)
-        : authorPermissions;
-
-      return auth0.updateUser(
-        { id },
-        { app_metadata: { groups: [], roles, permissions } }
+      return dataSources.accountsAPI.changeAccountModeratorRole(
+        id,
+        isModerator
       );
     },
-    createAccount(parent, { data: { email, password } }, context, info) {
-      return auth0.createUser({
-        app_metadata: {
-          groups: [],
-          roles: ["author"],
-          permissions: [
-            "read:own_account",
-            "edit:own_account",
-            "read:any_profile",
-            "edit:own_profile",
-            "read:any_content",
-            "edit:own_content",
-            "upload:own_media"
-          ]
-        },
-        connection: "Username-Password-Authentication",
-        email,
-        password
-      });
-    },
-    async deleteAccount(parent, { where: { id } }, context, info) {
-      try {
-        await auth0.deleteUser({ id });
-        return true;
-      } catch (error) {
-        return false;
-      }
-    },
-    async updateAccount(
+    createAccount(
       parent,
-      { data: { email, newPassword, password }, where: { id } },
-      context,
+      { data: { email, password } },
+      { dataSources },
       info
     ) {
-      if (!email && !newPassword && !password) {
-        throw new UserInputError(
-          "You must supply some account data to update."
-        );
-      } else if (email && newPassword && password) {
-        throw new UserInputError(
-          "Email and password cannot be updated simultaneously."
-        );
-      } else if ((!password && newPassword) || (password && !newPassword)) {
-        throw new UserInputError(
-          "Provide the existing and new passwords when updating the password."
-        );
-      }
-
-      if (!email) {
-        try {
-          const user = await auth0.getUser({ id });
-          await getToken(user.email, password);
-        } catch (error) {
-          throw new UserInputError(error);
-        }
-
-        return auth0.updateUser({ id }, { password: newPassword });
-      }
-
-      return auth0.updateUser({ id }, { email });
+      return dataSources.accountsAPI.createAccount(email, password);
+    },
+    deleteAccount(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.accountsAPI.deleteAccount(id);
+    },
+    updateAccount(parent, { data, where: { id } }, { dataSources }, info) {
+      return dataSources.accountsAPI.updateAccount(id, data);
     }
   }
 };
