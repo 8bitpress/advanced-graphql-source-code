@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently -k npm:dev:*",
     "dev:accounts": "nodemon -r dotenv/config -r esm ./src/services/accounts/index.js",
-    "dev:gateway": "wait-on tcp:4001 && nodemon -r dotenv/config -r esm ./src/index.js"
+    "dev:profiles": "nodemon -r dotenv/config -r esm ./src/services/profiles/index.js",
+    "dev:gateway": "wait-on tcp:4001 && wait-on tcp:4002 && nodemon -r dotenv/config -r esm ./src/index.js"
   },
   "keywords": [],
   "author": "",
