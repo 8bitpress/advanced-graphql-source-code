@@ -18,6 +18,14 @@ const typeDefs = gql`
   }
 
   """
+  Provides the unique MongoDB document ID of an existing profile.
+  """
+  input FollowingProfileInput {
+    "The unique profile ID of the user to be followed or unfollowed."
+    followingProfileId: ID!
+  }
+
+  """
   Provides the unique username of an existing profile.
   """
   input ProfileWhereUniqueInput {
@@ -83,6 +91,18 @@ const typeDefs = gql`
 
     "Deletes a user profile."
     deleteProfile(where: ProfileWhereUniqueInput!): ID!
+
+    "Allows one user to follow another."
+    followProfile(
+      data: FollowingProfileInput!
+      where: ProfileWhereUniqueInput!
+    ): Profile!
+
+    "Allows one user to unfollow another."
+    unfollowProfile(
+      data: FollowingProfileInput!
+      where: ProfileWhereUniqueInput!
+    ): Profile!
 
     "Updates a user's profile details."
     updateProfile(

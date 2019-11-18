@@ -35,6 +35,10 @@ class ProfilesDataSource extends DataSource {
     return viewerProfile.following.includes(profileId);
   }
 
+  getFollowedProfiles(following) {
+    return this.Profile.find({ _id: { $in: following } }).exec();
+  }
+
   getProfile(filter) {
     return this.Profile.findOne(filter).exec();
   }
@@ -48,6 +52,22 @@ class ProfilesDataSource extends DataSource {
   }
 
   // UPDATE
+  followProfile(username, profileIdToFollow) {
+    return this.Profile.findOneAndUpdate(
+      { username },
+      { $addToSet: { following: profileIdToFollow } },
+      { new: true }
+    ).exec();
+  }
+
+  unfollowProfile(username, profileIdToUnfollow) {
+    return this.Profile.findOneAndUpdate(
+      { username },
+      { $pull: { following: profileIdToUnfollow } },
+      { new: true }
+    ).exec();
+  }
+
   updateProfile(currentUsername, { description, fullName, username }) {
     if (!description && !fullName && !username) {
       throw new UserInputError("You must supply some profile data to update.");
