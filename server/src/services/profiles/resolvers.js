@@ -32,6 +32,12 @@ const resolvers = {
     profiles(parent, args, { dataSources }, info) {
       return dataSources.profilesAPI.getProfiles();
     }
+  },
+
+  Mutation: {
+    createProfile(parent, { data }, { dataSources }, info) {
+      return dataSources.profilesAPI.createProfile(data);
+    }
   }
 };
 

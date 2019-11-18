@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
+import auth0 from "../../config/auth0";
 import initMongoose from "../../config/mongoose";
 import permissions from "./permissions";
 import Profile from "../../models/Profile";
@@ -25,7 +26,7 @@ import typeDefs from "./typeDefs";
     },
     dataSources: () => {
       return {
-        profilesAPI: new ProfilesDataSource({ Profile })
+        profilesAPI: new ProfilesDataSource({ auth0, Profile })
       };
     }
   });

@@ -1,6 +1,24 @@
 import { gql } from "apollo-server";
 
 const typeDefs = gql`
+  # INPUTS
+
+  """
+  Provides data to create a new user profile.
+  """
+  input CreateProfileInput {
+    "The new user's the unique Auth0 ID."
+    accountId: ID!
+    "A short bio or description about the user (max. 256 characters)."
+    description: String
+    "The new user's full name."
+    fullName: String
+    "The new user's username (must be unique)."
+    username: String!
+  }
+
+  # TYPES
+
   extend type Account @key(fields: "id") {
     id: ID! @external
     "Metadata about the user that owns the account."
@@ -29,12 +47,19 @@ const typeDefs = gql`
     viewerIsFollowing: Boolean
   }
 
+  # QUERIES & MUTATIONS
+
   extend type Query {
     "Retrieves a single profile by username."
     profile(username: String!): Profile!
 
     "Retrieves a list of profiles."
     profiles: [Profile]
+  }
+
+  extend type Mutation {
+    "Creates a new profile tied to an Auth0 account."
+    createProfile(data: CreateProfileInput!): Profile!
   }
 `;
 
