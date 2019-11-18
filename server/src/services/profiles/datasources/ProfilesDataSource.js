@@ -48,8 +48,29 @@ class ProfilesDataSource extends DataSource {
   }
 
   // UPDATE
+  updateProfile(currentUsername, { description, fullName, username }) {
+    if (!description && !fullName && !username) {
+      throw new UserInputError("You must supply some profile data to update.");
+    }
+
+    const data = {
+      ...(description && { description }),
+      ...(fullName && { fullName }),
+      ...(username && { username })
+    };
+
+    return this.Profile.findOneAndUpdate({ username: currentUsername }, data, {
+      new: true
+    }).exec();
+  }
 
   // DELETE
+  async deleteProfile(username) {
+    const deletedProfile = await this.Profile.findOneAndDelete({
+      username
+    }).exec();
+    return deletedProfile.username;
+  }
 }
 
 export default ProfilesDataSource;

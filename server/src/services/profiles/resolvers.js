@@ -37,6 +37,17 @@ const resolvers = {
   Mutation: {
     createProfile(parent, { data }, { dataSources }, info) {
       return dataSources.profilesAPI.createProfile(data);
+    },
+    deleteProfile(parent, { where: { username } }, { dataSources }, info) {
+      return dataSources.profilesAPI.deleteProfile(username);
+    },
+    updateProfile(
+      parent,
+      { data, where: { username: currentUsername } },
+      { dataSources },
+      info
+    ) {
+      return dataSources.profilesAPI.updateProfile(currentUsername, data);
     }
   }
 };
