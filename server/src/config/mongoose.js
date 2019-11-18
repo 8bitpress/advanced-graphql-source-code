@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 
 export default function initMongoose() {
-  mongoose.connect(process.env.MONGODB_URL, {
+  const connectionUrl = process.env.MONGODB_URL;
+
+  mongoose.connect(connectionUrl, {
     useNewUrlParser: true,
     useFindAndModify: false,
     useCreateIndex: true,
