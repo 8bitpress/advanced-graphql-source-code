@@ -21,7 +21,7 @@ const isCreatingOwnProfile = rule()(
 const isEditingOwnProfile = rule()(
   async (parent, { where: { username } }, { user, dataSources }, info) => {
     const profile = await dataSources.profilesAPI.getProfile({ username });
-    return user.sub === profile.accountId;
+    return profile && user.sub === profile.accountId;
   }
 );
 

@@ -98,7 +98,7 @@ class ProfilesDataSource extends DataSource {
     const deletedProfile = await this.Profile.findOneAndDelete({
       username
     }).exec();
-    return deletedProfile.username;
+    return deletedProfile._id;
   }
 }
 

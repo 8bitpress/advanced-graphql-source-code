@@ -1,3 +1,5 @@
+import { UserInputError } from "apollo-server";
+
 const resolvers = {
   Account: {
     profile(account, args, { dataSources }, info) {
@@ -29,8 +31,13 @@ const resolvers = {
   },
 
   Query: {
-    profile(parent, { username }, { dataSources }, info) {
-      return dataSources.profilesAPI.getProfile({ username });
+    async profile(parent, { username }, { dataSources }, info) {
+      const profile = await dataSources.profilesAPI.getProfile({ username });
+
+      if (!profile) {
+        throw new UserInputError("Profile does not exist.");
+      }
+      return profile;
     },
     profiles(parent, args, { dataSources }, info) {
       return dataSources.profilesAPI.getProfiles();

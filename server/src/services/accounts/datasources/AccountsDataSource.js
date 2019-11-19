@@ -102,7 +102,7 @@ class AccountsDataSource extends DataSource {
     try {
       await this.auth0.deleteUser({ id });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
