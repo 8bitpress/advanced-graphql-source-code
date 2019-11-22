@@ -18,6 +18,10 @@ class Pagination {
       throw new UserInputError(
         "Passing `first` and `last` arguments is not supported with this connection."
       );
+    } else if (first < 0 || last < 0) {
+      throw new UserInputError(
+        "Minimum record request for `first` and `last` arguments is 0."
+      );
     } else if (first > 100 || last > 100) {
       throw new UserInputError(
         "Maximum record request for `first` and `last` arguments is 100."
