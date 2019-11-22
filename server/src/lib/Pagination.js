@@ -43,8 +43,21 @@ class Pagination {
         ? docs.map(doc => ({ cursor: doc._id, node: doc }))
         : [];
     } else {
-      // backward pagination (later)
-      // edges = ???
+      const reverseSort = this._reverseSortDirection(sort);
+      const operator = this._getOperator(reverseSort);
+
+      const queryDoc = before
+        ? await this._getFilterWithCursor(before, filter, operator, reverseSort)
+        : filter;
+
+      const docs = await this.Model.find(queryDoc)
+        .sort(reverseSort)
+        .limit(last)
+        .exec();
+
+      edges = docs.length
+        ? docs.map(doc => ({ node: doc, cursor: doc._id })).reverse()
+        : [];
     }
 
     return edges;
@@ -81,7 +94,16 @@ class Pagination {
 
   // Reverse the sort direction when queries need to look in the opposite
   // direction of the set sort order (e.g. next/previous page checks)
-  _reverseSortDirection(sort) {}
+  _reverseSortDirection(sort) {
+    const fieldArr = Object.keys(sort);
+
+    if (fieldArr.length === 0) {
+      return { $natural: -1 };
+    }
+
+    const field = fieldArr[0];
+    return { [field]: sort[field] * -1 };
+  }
 
   // Get the correct comparison operator based on the sort order
   _getOperator(sort, options = {}) {
