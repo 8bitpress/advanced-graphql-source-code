@@ -142,10 +142,20 @@ const typeDefs = gql`
     profile(username: String!): Profile!
 
     "Retrieves a list of profiles."
-    profiles: [Profile]
+    profiles(
+      after: String
+      before: String
+      first: Int
+      last: Int
+      orderBy: ProfileOrderByInput
+    ): ProfileConnection
 
-    "Performs a search of user profiles."
-    searchProfiles(query: ProfileSearchInput!): [Profile]
+    "Performs a search of user profiles. Results are avaiable in descending order by relevance only."
+    searchProfiles(
+      after: String
+      first: Int
+      query: ProfileSearchInput!
+    ): ProfileConnection
   }
 
   extend type Mutation {
