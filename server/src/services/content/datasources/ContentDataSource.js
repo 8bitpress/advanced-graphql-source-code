@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
-import Pagination from "../../shared/Pagination";
+import Pagination from "../../../lib/Pagination";
 
 class ContentDataSource extends DataSource {
   constructor({ Post, Profile, Reply }) {
@@ -27,7 +27,22 @@ class ContentDataSource extends DataSource {
 
     return sort;
   }
+
   // CREATE
+  async createPost({ username, text }) {
+    let profile;
+
+    try {
+      profile = await this.Profile.findOne({ username }).exec();
+    } catch (error) {
+      throw new UserInputError(
+        "You must provide a valid username as the author of this post."
+      );
+    }
+
+    const newPost = new this.Post({ authorProfileId: profile._id, text });
+    return newPost.save();
+  }
 
   // READ
 
@@ -41,7 +56,7 @@ class ContentDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
-  getPost(id) {
+  async getPost(id) {
     return this.Post.findById(id);
   }
 
@@ -65,7 +80,7 @@ class ContentDataSource extends DataSource {
       filter.blocked = false || undefined;
     }
 
-    const sort = getContentSort(orderBy);
+    const sort = this.getContentSort(orderBy);
     const queryArgs = { after, before, first, last, filter, sort };
     const edges = await this.postPagination.getEdges(queryArgs);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
@@ -76,6 +91,10 @@ class ContentDataSource extends DataSource {
   // UPDATE
 
   // DELETE
+  async deletePost(id) {
+    const deletedPost = await this.Post.findOneAndDelete({ _id: id }).exec();
+    return deletedPost._id;
+  }
 }
 
 export default ContentDataSource;

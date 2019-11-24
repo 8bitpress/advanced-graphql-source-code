@@ -31,6 +31,15 @@ const resolvers = {
     posts(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getPosts(args);
     }
+  },
+
+  Mutation: {
+    createPost(parent, { data }, { dataSources }, info) {
+      return dataSources.contentAPI.createPost(data);
+    },
+    deletePost(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.deletePost(id);
+    }
   }
 };
 

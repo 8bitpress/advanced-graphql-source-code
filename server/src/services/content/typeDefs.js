@@ -1,4 +1,4 @@
-import gql from "apollo-server";
+import { gql } from "apollo-server";
 
 const typeDefs = gql`
   # SCALARS
@@ -21,6 +21,24 @@ const typeDefs = gql`
   }
 
   # INPUTS
+
+  """
+  Provides the unique ID of an existing piece of content.
+  """
+  input ContentWhereUniqueInput {
+    "The unique MongoDB document ID associated with the content."
+    id: ID!
+  }
+
+  """
+  Provides data to create a post.
+  """
+  input CreatePostInput {
+    "The unique username of the user who authored the post."
+    username: String!
+    "The body content of the post (max. 256 characters)."
+    text: String!
+  }
 
   """
   Provides a filter on which posts may be queried.
@@ -73,7 +91,7 @@ const typeDefs = gql`
     "A list of post edges."
     edges: [PostEdge]
     "Information to assist with pagination."
-    pageInfo: ContentPageInfo!
+    pageInfo: PageInfo!
   }
 
   """
@@ -111,6 +129,14 @@ const typeDefs = gql`
       orderBy: PostOrderByInput
       filter: PostWhereInput
     ): PostConnection
+  }
+
+  extend type Mutation {
+    "Creates a new post."
+    createPost(data: CreatePostInput!): Post!
+
+    "Deletes a post."
+    deletePost(where: ContentWhereUniqueInput!): ID! # NEW!
   }
 `;
 
