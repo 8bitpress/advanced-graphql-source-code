@@ -1,3 +1,5 @@
+import { DateTimeResolver } from "../../lib/customScalars";
+
 const resolvers = {
   DateTime: DateTimeResolver,
 
