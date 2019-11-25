@@ -56,8 +56,35 @@ class ContentDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
+  async getOwnReplies({
+    after,
+    before,
+    first,
+    last,
+    orderBy,
+    authorProfileId
+  }) {
+    const sort = this.getContentSort(orderBy);
+    const filter = { authorProfileId };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
+  }
+
   async getPost(id) {
     return this.Post.findById(id);
+  }
+
+  async getPostReplies({ after, before, first, last, orderBy, postId }) {
+    const sort = this.getContentSort(orderBy);
+    const filter = { postId };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
   }
 
   async getPosts({ after, before, first, last, orderBy, filter: rawFilter }) {
@@ -84,6 +111,40 @@ class ContentDataSource extends DataSource {
     const queryArgs = { after, before, first, last, filter, sort };
     const edges = await this.postPagination.getEdges(queryArgs);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
+  }
+
+  async getReplies({ after, before, first, last, orderBy, filter: rawFilter }) {
+    const { to, from } = rawFilter;
+    let filter = {};
+
+    if (!to && !from) {
+      throw new UserInputError(
+        "You must provide a username to get replies to or from."
+      );
+    } else if (to && from) {
+      throw new UserInputError(
+        "You may only provide a `to` or `from` argument."
+      );
+    }
+
+    try {
+      const profile = await this.Profile.findOne({ username: from || to });
+
+      if (from) {
+        filter.authorProfileId = profile._id;
+      } else {
+        filter.postAuthorProfileId = profile._id;
+      }
+    } catch (error) {
+      throw new UserInputError("User with that username cannot be found.");
+    }
+
+    const sort = this.getContentSort(orderBy);
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.replyPagination.getEdges(queryArgs);
+    const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
