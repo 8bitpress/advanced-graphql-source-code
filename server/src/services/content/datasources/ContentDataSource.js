@@ -30,18 +30,42 @@ class ContentDataSource extends DataSource {
 
   // CREATE
   async createPost({ username, text }) {
-    let profile;
+    const profile = await this.Profile.findOne({ username }).exec();
 
-    try {
-      profile = await this.Profile.findOne({ username }).exec();
-    } catch (error) {
+    if (!profile) {
       throw new UserInputError(
         "You must provide a valid username as the author of this post."
       );
     }
 
     const newPost = new this.Post({ authorProfileId: profile._id, text });
+
     return newPost.save();
+  }
+
+  async createReply({ username, text, postId }) {
+    console.log(postId);
+    const post = await this.Post.findById(postId).exec();
+    const profile = await this.Profile.findOne({ username }).exec();
+
+    if (!profile) {
+      throw new UserInputError(
+        "You must provide a valid username as the author of this reply."
+      );
+    } else if (!post) {
+      throw new UserInputError(
+        "You must provide a valid parent post ID for this reply."
+      );
+    }
+
+    const newReply = new this.Reply({
+      authorProfileId: profile._id,
+      text,
+      postId,
+      postAuthorProfileId: post.authorProfileId
+    });
+
+    return newReply.save();
   }
 
   // READ
@@ -91,16 +115,17 @@ class ContentDataSource extends DataSource {
     let filter = {};
 
     if (rawFilter && rawFilter.followedBy) {
-      try {
-        const profile = await this.Profile.findOne({
-          username: rawFilter.followedBy
-        });
-        filter.authorProfileId = {
-          $in: [...profile.following, profile._id]
-        };
-      } catch (error) {
+      const profile = await this.Profile.findOne({
+        username: rawFilter.followedBy
+      });
+
+      if (!profile) {
         throw new UserInputError("User with that username cannot be found.");
       }
+
+      filter.authorProfileId = {
+        $in: [...profile.following, profile._id]
+      };
     }
 
     if (rawFilter && rawFilter.includeBlocked === false) {
@@ -117,7 +142,6 @@ class ContentDataSource extends DataSource {
 
   async getReplies({ after, before, first, last, orderBy, filter: rawFilter }) {
     const { to, from } = rawFilter;
-    let filter = {};
 
     if (!to && !from) {
       throw new UserInputError(
@@ -129,16 +153,17 @@ class ContentDataSource extends DataSource {
       );
     }
 
-    try {
-      const profile = await this.Profile.findOne({ username: from || to });
+    let filter = {};
+    const profile = await this.Profile.findOne({ username: from || to });
 
-      if (from) {
-        filter.authorProfileId = profile._id;
-      } else {
-        filter.postAuthorProfileId = profile._id;
-      }
-    } catch (error) {
+    if (!profile) {
       throw new UserInputError("User with that username cannot be found.");
+    }
+
+    if (from) {
+      filter.authorProfileId = profile._id;
+    } else {
+      filter.postAuthorProfileId = profile._id;
     }
 
     const sort = this.getContentSort(orderBy);
@@ -149,12 +174,21 @@ class ContentDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
+  getReply(id) {
+    return this.Reply.findById(id).exec();
+  }
+
   // UPDATE
 
   // DELETE
   async deletePost(id) {
     const deletedPost = await this.Post.findOneAndDelete({ _id: id }).exec();
     return deletedPost._id;
+  }
+
+  async deleteReply(id) {
+    const deletedReply = await this.Reply.findOneAndDelete({ _id: id }).exec();
+    return deletedReply._id;
   }
 }
 

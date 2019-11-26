@@ -70,6 +70,12 @@ const resolvers = {
     },
     posts(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getPosts(args);
+    },
+    reply(parent, { id }, { dataSources }, info) {
+      return dataSources.contentAPI.getReply(id);
+    },
+    replies(parent, args, { dataSources }, info) {
+      return dataSources.contentAPI.getReplies(args);
     }
   },
 
@@ -77,8 +83,14 @@ const resolvers = {
     createPost(parent, { data }, { dataSources }, info) {
       return dataSources.contentAPI.createPost(data);
     },
+    createReply(parent, { data }, { dataSources }, info) {
+      return dataSources.contentAPI.createReply(data);
+    },
     deletePost(parent, { where: { id } }, { dataSources }, info) {
       return dataSources.contentAPI.deletePost(id);
+    },
+    deleteReply(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.deleteReply(id);
     }
   }
 };

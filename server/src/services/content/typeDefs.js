@@ -71,6 +71,18 @@ const typeDefs = gql`
   }
 
   """
+  Provides data to create a reply to a post.
+  """
+  input CreateReplyInput {
+    "The unique MongoDB document ID if the parent post."
+    postId: ID!
+    "The body content of the reply (max. 256 characters)."
+    text: String!
+    "The unique username of the user who authored the reply."
+    username: String!
+  }
+
+  """
   Provides a filter on which posts may be queried.
   """
   input PostWhereInput {
@@ -247,7 +259,13 @@ const typeDefs = gql`
     createPost(data: CreatePostInput!): Post!
 
     "Deletes a post."
-    deletePost(where: ContentWhereUniqueInput!): ID! # NEW!
+    deletePost(where: ContentWhereUniqueInput!): ID!
+
+    "Creates a new reply to a post."
+    createReply(data: CreateReplyInput!): Reply!
+
+    "Deletes a reply to a post."
+    deleteReply(where: ContentWhereUniqueInput!): ID!
   }
 `;
 
