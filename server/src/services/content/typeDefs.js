@@ -21,6 +21,14 @@ const typeDefs = gql`
   }
 
   """
+  Provides a search string to query posts by text in their body content.
+  """
+  input PostSearchInput {
+    "The text string to search for in the post content."
+    text: String!
+  }
+
+  """
   Sorting options for reply connections.
   """
   enum ReplyOrderByInput {
@@ -252,6 +260,13 @@ const typeDefs = gql`
       orderBy: ReplyOrderByInput
       filter: ReplyWhereInput!
     ): ReplyConnection
+
+    "Performs a search of posts. Results are available in descending order by relevance only."
+    searchPosts(
+      after: String
+      first: Int
+      query: PostSearchInput!
+    ): PostConnection
   }
 
   extend type Mutation {
@@ -266,6 +281,12 @@ const typeDefs = gql`
 
     "Deletes a reply to a post."
     deleteReply(where: ContentWhereUniqueInput!): ID!
+
+    "Toggles the current blocked state of the post."
+    togglePostBlock(where: ContentWhereUniqueInput!): Post!
+
+    "Toggles the current blocked state of the reply."
+    toggleReplyBlock(where: ContentWhereUniqueInput!): Reply!
   }
 `;
 

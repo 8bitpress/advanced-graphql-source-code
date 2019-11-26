@@ -76,6 +76,18 @@ const resolvers = {
     },
     replies(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getReplies(args);
+    },
+    searchPosts(
+      parent,
+      { after, first, query: { text } },
+      { dataSources },
+      info
+    ) {
+      return dataSources.contentAPI.searchPosts({
+        after,
+        first,
+        searchString: text
+      });
     }
   },
 
@@ -91,6 +103,12 @@ const resolvers = {
     },
     deleteReply(parent, { where: { id } }, { dataSources }, info) {
       return dataSources.contentAPI.deleteReply(id);
+    },
+    togglePostBlock(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.togglePostBlock(id);
+    },
+    toggleReplyBlock(parent, { where: { id } }, { dataSources }, info) {
+      return dataSources.contentAPI.toggleReplyBlock(id);
     }
   }
 };
