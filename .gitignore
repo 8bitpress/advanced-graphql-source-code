@@ -3,12 +3,27 @@
 .vs
 .vscode
 
-# node
+# dependencies
 
 node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+# environment
+
+.env 
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# client
+
+client/coverage
+cilent/build
+
+# server
+
+server/src/scripts/authenticateUser.js
+server/src/scripts/seedData.js
 
 # misc
 
@@ -21,15 +36,6 @@ ehthumbs.db
 *[Tt]humbs.db
 *.Trashes
 
-# environment
-
-.env 
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# server
-
-server/src/scripts/authenticateUser.js
-server/src/scripts/seedData.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
