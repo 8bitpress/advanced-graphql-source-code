@@ -32,3 +32,4 @@ ehthumbs.db
 # server
 
 server/src/scripts/authenticateUser.js
+server/src/scripts/seedData.js

@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.0.0",
+    "faker": "^4.1.0",
     "nodemon": "^1.19.4",
     "wait-on": "^3.3.0"
   }
