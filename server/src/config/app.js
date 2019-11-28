@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import jwt from "express-jwt";
 import jwksClient from "jwks-rsa";
@@ -23,5 +24,14 @@ app.use(jwtCheck, (err, req, res, next) => {
   }
   return next(err);
 });
+
+if (process.env.NODE_ENV === "development") {
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true
+    })
+  );
+}
 
 export default app;
