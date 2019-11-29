@@ -4,6 +4,7 @@ import { Router } from "react-router-dom";
 import React from "react";
 import ReactDOM from "react-dom";
 
+import { AuthProvider } from "./context/AuthContext";
 import client from "./graphql/apollo";
 import GlobalStyle from "./styles/global";
 import history from "./routes/history";
@@ -12,12 +13,14 @@ import theme from "./styles/theme";
 
 const App = () => (
   <ApolloProvider client={client}>
-    <GlobalStyle />
-    <Grommet theme={theme}>
-      <Router history={history}>
-        <Routes />
-      </Router>
-    </Grommet>
+    <AuthProvider>
+      <GlobalStyle />
+      <Grommet theme={theme}>
+        <Router history={history}>
+          <Routes />
+        </Router>
+      </Grommet>
+    </AuthProvider>
   </ApolloProvider>
 );
 
