@@ -42,14 +42,13 @@ class Auth0 {
   };
 
   setSession(authResult) {
-    const cookieOptions =
-      process.env.NODE_ENV === "production"
-        ? {
-            httpOnly: true,
-            secure: true,
-            sameSite: "Lax"
-          }
-        : {};
+    const cookieOptions = {
+      ...(process.env.NODE_ENV === "production" && {
+        httpOnly: true,
+        secure: true
+      }),
+      sameSite: "Strict"
+    };
     Cookies.set("access_token", authResult.accessToken, cookieOptions);
     const expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
     localStorage.setItem("access_token_expires_at", expiresAt);

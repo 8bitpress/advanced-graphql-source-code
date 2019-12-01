@@ -1,7 +1,13 @@
-import { Anchor, Box, Heading } from "grommet";
+import { Anchor, Box, Heading, Menu } from "grommet";
+import { Menu as MenuIcon } from "grommet-icons";
+import { withRouter } from "react-router-dom";
 import React from "react";
 
-const NavBar = () => {
+import { useAuth } from "../../context/AuthContext";
+
+const NavBar = ({ location }) => {
+  const { logout } = useAuth();
+
   return (
     <header>
       <Box
@@ -19,9 +25,18 @@ const NavBar = () => {
         <Heading color="brand" level="1" size="32px">
           <Anchor href="/" label="devchirps" primary />
         </Heading>
+        {location.pathname !== "/" && (
+          <Menu
+            a11yTitle="User Menu"
+            dropAlign={{ right: "right", top: "top" }}
+            icon={<MenuIcon color="brand" size="20px" />}
+            items={[{ label: "Logout", onClick: logout }]}
+            justifyContent="end"
+          />
+        )}
       </Box>
     </header>
   );
 };
 
-export default NavBar;
+export default withRouter(NavBar);

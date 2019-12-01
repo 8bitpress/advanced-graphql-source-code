@@ -12,6 +12,12 @@ const Home = () => {
         I am authenticated:{" "}
         {!value.checkingSession && value.isAuthenticated().toString()}
       </p>
+      <p>
+        My name is:{" "}
+        {value.viewerQuery &&
+          value.viewerQuery.data.viewer.profile &&
+          value.viewerQuery.data.viewer.profile.fullName}
+      </p>
     </MainLayout>
   );
 };
