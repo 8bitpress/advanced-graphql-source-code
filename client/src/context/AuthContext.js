@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+import { GET_VIEWER } from "../graphql/queries";
 import Auth0 from "../lib/Auth0";
-import getViewer from "../lib/getViewer";
+import client from "../graphql/apollo";
 import history from "../routes/history";
 
 const auth0 = new Auth0();
@@ -13,7 +14,7 @@ const AuthProvider = ({ children }) => {
   const [viewerQuery, setViewerQuery] = useState(null);
 
   const updateViewer = async () => {
-    const result = await getViewer();
+    const result = await client.query({ query: GET_VIEWER });
     setViewerQuery(result);
   };
 

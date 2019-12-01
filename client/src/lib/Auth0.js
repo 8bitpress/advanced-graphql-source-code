@@ -41,6 +41,16 @@ class Auth0 {
     Cookies.remove("access_token");
   };
 
+  renewToken(expiresIn) {
+    if (expiresIn > 0) {
+      setTimeout(() => {
+        this.silentAuth().catch(() => {
+          this.logout();
+        });
+      }, expiresIn);
+    }
+  }
+
   setSession(authResult) {
     const cookieOptions = {
       ...(process.env.NODE_ENV === "production" && {
@@ -52,6 +62,7 @@ class Auth0 {
     Cookies.set("access_token", authResult.accessToken, cookieOptions);
     const expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
     localStorage.setItem("access_token_expires_at", expiresAt);
+    this.renewToken(authResult.expiresIn * 1000);
   }
 
   silentAuth = () => {
