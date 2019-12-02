@@ -1,10 +1,10 @@
-import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import React from "react";
 
-import Loader from "../../components/Loader";
 import { useAuth } from "../../context/AuthContext";
+import Loader from "../../components/Loader";
 
-const PrivateRoute = ({ component: Component, location, ...rest }) => {
+const PrivateRoute = ({ component: Component, location, render, ...rest }) => {
   const { checkingSession, isAuthenticated, viewerQuery } = useAuth();
 
   const renderRoute = props => {
@@ -12,6 +12,21 @@ const PrivateRoute = ({ component: Component, location, ...rest }) => {
 
     if (checkingSession) {
       content = <Loader centered />;
+    } else if (
+      isAuthenticated() &&
+      props.location.pathname !== "/settings/profile" &&
+      !viewerQuery.data.viewer.profile
+    ) {
+      content = (
+        <Redirect
+          to={{
+            pathname: "/settings/profile",
+            state: { from: props.location }
+          }}
+        />
+      );
+    } else if (isAuthenticated() && render) {
+      content = render(props);
     } else if (isAuthenticated() && viewerQuery) {
       content = <Component {...props} />;
     } else if (!viewerQuery) {
