@@ -1,10 +1,11 @@
 import { Box, Button, Heading, Image, Text } from "grommet";
+import { withRouter } from "react-router-dom";
 import moment from "moment";
 import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
 
-const ProfileHeader = ({ profileData }) => {
+const ProfileHeader = ({ history, profileData }) => {
   const { account, avatar, description, fullName, username } = profileData;
 
   const {
@@ -15,7 +16,13 @@ const ProfileHeader = ({ profileData }) => {
 
   const renderButton = () => {
     if (username === viewer.profile.username) {
-      return <Button label="Edit Profile" primary />;
+      return (
+        <Button
+          label="Edit Profile"
+          onClick={() => history.push("/settings/profile")} // NEW!
+          primary
+        />
+      );
     }
     return null;
   };
@@ -55,4 +62,4 @@ const ProfileHeader = ({ profileData }) => {
   );
 };
 
-export default ProfileHeader;
+export default withRouter(ProfileHeader);

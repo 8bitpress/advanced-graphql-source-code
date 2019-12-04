@@ -3,17 +3,28 @@ import { useQuery } from "@apollo/client";
 import React from "react";
 
 import { GET_PROFILE } from "../../graphql/queries";
+import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader/";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
 import ProfileHeader from "../../components/ProfileHeader/";
 
 const Profile = ({ match }) => {
+  const { checkingSession, viewerQuery } = useAuth();
+  let username;
+
+  if (match.params.username) {
+    username = match.params.username;
+  } else if (viewerQuery.data && viewerQuery.data.viewer.profile) {
+    username = viewerQuery.data.viewer.profile.username;
+  }
+
   const { data, error, loading } = useQuery(GET_PROFILE, {
-    variables: { username: match.params.username }
+    skip: !username,
+    variables: { username }
   });
 
-  if (loading) {
+  if (checkingSession || loading) {
     return (
       <MainLayout>
         <Loader centered />
