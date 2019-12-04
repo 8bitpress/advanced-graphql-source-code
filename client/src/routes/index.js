@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router";
 import Home from "../pages/Home";
 import Index from "../pages/Index";
 import Login from "../pages/Login";
+import NotFound from "../pages/NotFound";
 import PrivateRoute from "../components/PrivateRoute";
 import Profile from "../pages/Profile";
 import ProfileSettings from "../pages/Settings/Profile";
@@ -13,7 +14,7 @@ const Routes = () => (
     <Route exact path="/" component={Index} />
     <PrivateRoute exact path="/home" component={Home} />
     <Route exact path="/login" component={Login} />
-    <PrivateRoute exact path="/profile" component={Profile} />
+    <PrivateRoute exact path="/profile/:username" component={Profile} />
     <PrivateRoute
       exact
       path="/settings/profile"
@@ -22,6 +23,7 @@ const Routes = () => (
         <ProfileSettings key="profile-settings" {...props} />
       ]}
     />
+    <PrivateRoute component={NotFound} />
   </Switch>
 );
 
