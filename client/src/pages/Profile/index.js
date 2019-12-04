@@ -6,6 +6,7 @@ import { GET_PROFILE } from "../../graphql/queries";
 import Loader from "../../components/Loader/";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
+import ProfileHeader from "../../components/ProfileHeader/";
 
 const Profile = ({ match }) => {
   const { data, error, loading } = useQuery(GET_PROFILE, {
@@ -21,7 +22,7 @@ const Profile = ({ match }) => {
   } else if (data && data.profile) {
     return (
       <MainLayout>
-        <p>My name is {data.profile.fullName}</p>
+        <ProfileHeader profileData={data.profile} />
       </MainLayout>
     );
   } else if (error) {
