@@ -8,13 +8,13 @@ import AccentButton from "../../components/AccentButton";
 import Loader from "../../components/Loader";
 import MainLayout from "../../layouts/MainLayout";
 
-const Index = ({ location }) => {
+const Index = () => {
   const { checkingSession, isAuthenticated, login, viewerQuery } = useAuth();
 
   if (checkingSession) {
     return <Loader centered />;
   } else if (isAuthenticated() && viewerQuery) {
-    return <Redirect to={{ pathname: "/home", state: { from: location } }} />;
+    return <Redirect to="/home" />;
   }
 
   return (

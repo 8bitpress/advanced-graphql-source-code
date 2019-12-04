@@ -1,18 +1,42 @@
 import { Box, Button, Form, FormField } from "grommet";
-import { withRouter } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 
+import { CREATE_PROFILE } from "../../graphql/mutations";
+import { GET_VIEWER } from "../../graphql/queries";
 import CharacterCountLabel from "../CharacterCountLabel";
+import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
-const CreateProfileForm = ({ accountId, history, updateViewer }) => {
+const CreateProfileForm = ({ accountId, updateViewer }) => {
   const [descCharCount, setDescCharCount] = useState(0);
+  const [createProfile, { error, loading }] = useMutation(CREATE_PROFILE, {
+    update: (cache, { data: { createProfile } }) => {
+      const { viewer } = cache.readQuery({ query: GET_VIEWER });
+      const viewerWithProfile = { ...viewer, profile: createProfile };
+      cache.writeQuery({
+        query: GET_VIEWER,
+        data: { viewer: viewerWithProfile }
+      });
+      updateViewer(viewerWithProfile);
+    }
+  });
 
   return (
     <Form
+      errors={{
+        username:
+          error &&
+          error.message.includes("duplicate key") &&
+          "Username is already in use"
+      }}
       messages={{ required: "Required" }}
       onSubmit={event => {
-        console.log("Submitted:", event.value);
+        createProfile({
+          variables: {
+            data: { accountId, ...event.value }
+          }
+        });
       }}
     >
       <FormField
@@ -54,9 +78,18 @@ const CreateProfileForm = ({ accountId, history, updateViewer }) => {
           }
         }}
       />
-      <Button label="Create Profile" primary type="submit" />
+      <Box align="center" direction="row" justify="end">
+        {loading && <Loader size="medium" />}
+        <Button
+          disabled={loading}
+          label="Create Profile"
+          margin={{ left: "xsmall" }}
+          primary
+          type="submit"
+        />
+      </Box>
     </Form>
   );
 };
 
-export default withRouter(CreateProfileForm);
+export default CreateProfileForm;

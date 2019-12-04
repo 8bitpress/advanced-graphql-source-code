@@ -4,7 +4,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
 
-const PrivateRoute = ({ component: Component, location, render, ...rest }) => {
+const PrivateRoute = ({ component: Component, render, ...rest }) => {
   const { checkingSession, isAuthenticated, viewerQuery } = useAuth();
 
   const renderRoute = props => {
@@ -17,22 +17,13 @@ const PrivateRoute = ({ component: Component, location, render, ...rest }) => {
       props.location.pathname !== "/settings/profile" &&
       !viewerQuery.data.viewer.profile
     ) {
-      content = (
-        <Redirect
-          to={{
-            pathname: "/settings/profile",
-            state: { from: props.location }
-          }}
-        />
-      );
-    } else if (isAuthenticated() && render) {
+      content = <Redirect to="/settings/profile" />;
+    } else if (isAuthenticated() && render && viewerQuery) {
       content = render(props);
     } else if (isAuthenticated() && viewerQuery) {
       content = <Component {...props} />;
     } else if (!viewerQuery) {
-      content = (
-        <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-      );
+      content = <Redirect to="/" />;
     }
 
     return content;
