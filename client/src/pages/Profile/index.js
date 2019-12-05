@@ -8,6 +8,7 @@ import Loader from "../../components/Loader/";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
 import ProfileHeader from "../../components/ProfileHeader/";
+import ProfileTabs from "../../components/ProfileTabs/";
 
 const Profile = ({ match }) => {
   const { checkingSession, viewerQuery } = useAuth();
@@ -34,6 +35,7 @@ const Profile = ({ match }) => {
     return (
       <MainLayout>
         <ProfileHeader profileData={data.profile} />
+        <ProfileTabs username={username} />
       </MainLayout>
     );
   } else if (error) {
