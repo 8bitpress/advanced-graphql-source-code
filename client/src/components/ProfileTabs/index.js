@@ -6,6 +6,7 @@ import React from "react";
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
 import ContentList from "../../components/ContentList/";
 import Loader from "../Loader";
+import ProfileList from "../ProfileList/";
 import RichTabTitle from "../RichTabTitle/";
 
 const ProfileTabs = ({ username }) => {
@@ -54,7 +55,14 @@ const ProfileTabs = ({ username }) => {
           <RichTabTitle icon={<Group />} label="Following" size="xsmall" />
         }
       >
-        <p>Followed users go here...</p>
+        <Box margin={{ top: "medium" }}>
+          {following.edges.length ? (
+            <ProfileList profileData={following.edges} />
+          ) : (
+            <Text as="p">No followed users to display yet!</Text>
+          )}
+        </Box>{" "}
+        {/* UPDATED! */}
       </Tab>
     </Tabs>
   );
