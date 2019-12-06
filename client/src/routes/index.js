@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Index from "../pages/Index";
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
+import Post from "../pages/Post";
 import PrivateRoute from "../components/PrivateRoute";
 import Profile from "../pages/Profile";
 import ProfileSettings from "../pages/Settings/Profile";
@@ -23,6 +24,7 @@ const Routes = () => (
         <ProfileSettings key="profile-settings" {...props} />
       ]}
     />
+    <PrivateRoute exact path="/post/:id" component={Post} />
     <PrivateRoute component={NotFound} />
   </Switch>
 );

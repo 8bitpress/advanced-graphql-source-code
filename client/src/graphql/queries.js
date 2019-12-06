@@ -9,6 +9,25 @@ import {
   profilesNextPage
 } from "./fragments";
 
+export const GET_POST = gql`
+  query GET_POST($id: ID!, $repliesCursor: String) {
+    post(id: $id) {
+      ...basicPost
+      replies(first: 30, after: $repliesCursor) @connection(key: "replies") {
+        edges {
+          node {
+            ...basicReply
+          }
+        }
+        ...repliesNextPage
+      }
+    }
+  }
+  ${basicPost}
+  ${basicReply}
+  ${repliesNextPage}
+`;
+
 export const GET_POSTS = gql`
   query GET_POSTS($cursor: String, $filter: PostWhereInput) {
     posts(first: 30, after: $cursor, filter: $filter) {

@@ -1,5 +1,5 @@
 import { Box, Text } from "grommet";
-import { useQuery, useApolloClient } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import React from "react";
 
 import { GET_POSTS } from "../../graphql/queries";
@@ -16,9 +16,6 @@ const Home = () => {
       data: { viewer }
     }
   } = useAuth();
-
-  const client = useApolloClient();
-  console.log(client.cache.data.data);
 
   const { data, fetchMore, loading } = useQuery(GET_POSTS, {
     variables: {

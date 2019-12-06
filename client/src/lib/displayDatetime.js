@@ -1,5 +1,10 @@
 import moment from "moment";
 
+export function displayFullDatetime(dateString) {
+  const datetime = new Date(dateString);
+  return moment(datetime).format("MMMM D, YYYY [at] h:mm a");
+}
+
 export function displayRelativeDateOrTime(dateString) {
   const today = new Date();
   const previousDate = new Date(dateString);

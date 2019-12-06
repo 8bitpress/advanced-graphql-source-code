@@ -1,12 +1,13 @@
 import { Anchor, Box, Image, Text } from "grommet";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import React from "react";
 
 import { displayRelativeDateOrTime } from "../../lib/displayDatetime";
 import { useAuth } from "../../context/AuthContext";
+import HoverBox from "../HoverBox";
 import NotAvailableMessage from "../NotAvailableMessage";
 
-const ContentListItem = ({ contentData }) => {
+const ContentListItem = ({ contentData, history }) => {
   const {
     viewerQuery: {
       data: { viewer }
@@ -23,7 +24,7 @@ const ContentListItem = ({ contentData }) => {
   } = contentData;
 
   return (
-    <Box
+    <HoverBox
       border={{
         color: "light-4",
         size: "xsmall",
@@ -31,6 +32,11 @@ const ContentListItem = ({ contentData }) => {
         side: "bottom"
       }}
       direction="row"
+      onClick={() => {
+        history.push(
+          `/${parentPostAuthor !== undefined ? "reply" : "post"}/${id}`
+        );
+      }}
       pad={{ left: "small", top: "medium", right: "small" }}
     >
       <Box
@@ -80,8 +86,8 @@ const ContentListItem = ({ contentData }) => {
           </Text>
         </Box>
       </Box>
-    </Box>
+    </HoverBox>
   );
 };
 
-export default ContentListItem;
+export default withRouter(ContentListItem);
