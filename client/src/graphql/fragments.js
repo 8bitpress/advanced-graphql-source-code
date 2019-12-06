@@ -43,3 +43,30 @@ export const basicReply = gql`
     text
   }
 `;
+
+export const postsNextPage = gql`
+  fragment postsNextPage on PostConnection {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+`;
+
+export const repliesNextPage = gql`
+  fragment repliesNextPage on ReplyConnection {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+`;
+
+export const profilesNextPage = gql`
+  fragment profilesNextPage on ProfileConnection {
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+`;

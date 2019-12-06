@@ -4,11 +4,11 @@ import React from "react";
 
 import { GET_PROFILE } from "../../graphql/queries";
 import { useAuth } from "../../context/AuthContext";
-import Loader from "../../components/Loader/";
+import Loader from "../../components/Loader";
 import MainLayout from "../../layouts/MainLayout";
 import NotFound from "../NotFound";
-import ProfileHeader from "../../components/ProfileHeader/";
-import ProfileTabs from "../../components/ProfileTabs/";
+import ProfileHeader from "../../components/ProfileHeader";
+import ProfileTabs from "../../components/ProfileTabs";
 
 const Profile = ({ match }) => {
   const { checkingSession, viewerQuery } = useAuth();
