@@ -13,7 +13,13 @@ const SingleContent = ({ contentData }) => {
     }
   } = useAuth();
 
-  const { author, createdAt, isBlocked, text } = contentData;
+  const {
+    author,
+    createdAt,
+    isBlocked,
+    postAuthor: parentPostAuthor,
+    text
+  } = contentData;
 
   return (
     <Box
@@ -52,6 +58,14 @@ const SingleContent = ({ contentData }) => {
         </Box>
       </Box>
       <Box margin={{ top: "small" }}>
+        {parentPostAuthor && (
+          <Text as="p">
+            <Text color="dark-3">Replying to </Text>
+            <Link to={`/profile/${parentPostAuthor.username}`}>
+              <Anchor as="span">@{parentPostAuthor.username}</Anchor>
+            </Link>
+          </Text>
+        )}
         {isBlocked && (
           <NotAvailableMessage
             margin={{ bottom: "small", top: "xsmall" }}

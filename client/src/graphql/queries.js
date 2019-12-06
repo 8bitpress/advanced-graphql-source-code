@@ -102,6 +102,19 @@ export const GET_PROFILE_CONTENT = gql`
   ${repliesNextPage}
 `;
 
+export const GET_REPLY = gql`
+  query GET_REPLY($id: ID!) {
+    reply(id: $id) {
+      ...basicReply
+      post {
+        ...basicPost
+      }
+    }
+  }
+  ${basicPost}
+  ${basicReply}
+`;
+
 export const GET_VIEWER = gql`
   query GET_VIEWER {
     viewer {

@@ -9,6 +9,7 @@ import Post from "../pages/Post";
 import PrivateRoute from "../components/PrivateRoute";
 import Profile from "../pages/Profile";
 import ProfileSettings from "../pages/Settings/Profile";
+import Reply from "../pages/Reply";
 
 const Routes = () => (
   <Switch>
@@ -25,6 +26,7 @@ const Routes = () => (
       ]}
     />
     <PrivateRoute exact path="/post/:id" component={Post} />
+    <PrivateRoute exact path="/reply/:id" component={Reply} />
     <PrivateRoute component={NotFound} />
   </Switch>
 );
