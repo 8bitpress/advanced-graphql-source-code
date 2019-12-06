@@ -5,8 +5,8 @@ import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
 
-const NavBar = ({ location }) => {
-  const { logout } = useAuth();
+const NavBar = ({ history, location }) => {
+  const { logout, viewerQuery } = useAuth();
 
   return (
     <header>
@@ -30,7 +30,16 @@ const NavBar = ({ location }) => {
             a11yTitle="User Menu"
             dropAlign={{ right: "right", top: "top" }}
             icon={<MenuIcon color="brand" size="20px" />}
-            items={[{ label: "Logout", onClick: logout }]}
+            items={[
+              {
+                label: "My Profile",
+                onClick: () =>
+                  history.push(
+                    `/profile/${viewerQuery.data.viewer.profile.username}`
+                  )
+              },
+              { label: "Logout", onClick: logout }
+            ]}
             justifyContent="end"
           />
         )}

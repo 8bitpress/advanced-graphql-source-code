@@ -1,3 +1,17 @@
+export function updateFieldPageResults(field, fetchMoreResult, previousResult) {
+  const { edges: newEdges, pageInfo } = fetchMoreResult[field];
+
+  return newEdges.length
+    ? {
+        [field]: {
+          __typename: previousResult[field].__typename,
+          edges: [...previousResult[field].edges, ...newEdges],
+          pageInfo
+        }
+      }
+    : previousResult;
+}
+
 export function updateSubfieldPageResults(
   field,
   subfield,
@@ -5,8 +19,6 @@ export function updateSubfieldPageResults(
   previousResult
 ) {
   const { edges: newEdges, pageInfo } = fetchMoreResult[field][subfield];
-
-  console.log(previousResult);
 
   return newEdges.length
     ? {
