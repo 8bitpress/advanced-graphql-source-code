@@ -1,12 +1,15 @@
-import { Anchor, Box, Heading, Menu } from "grommet";
+import { Anchor, Box, Button, Heading, Menu } from "grommet";
 import { Menu as MenuIcon } from "grommet-icons";
 import { withRouter } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
+import CreateContentForm from "../CreateContentForm";
+import Modal from "../Modal";
 
 const NavBar = ({ history, location }) => {
   const { logout, viewerQuery } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <header>
@@ -26,22 +29,39 @@ const NavBar = ({ history, location }) => {
           <Anchor href="/" label="devchirps" primary />
         </Heading>
         {location.pathname !== "/" && (
-          <Menu
-            a11yTitle="User Menu"
-            dropAlign={{ right: "right", top: "top" }}
-            icon={<MenuIcon color="brand" size="20px" />}
-            items={[
-              {
-                label: "My Profile",
-                onClick: () =>
-                  history.push(
-                    `/profile/${viewerQuery.data.viewer.profile.username}`
-                  )
-              },
-              { label: "Logout", onClick: logout }
-            ]}
-            justifyContent="end"
-          />
+          <Box align="center" direction="row">
+            <Modal
+              handleClose={() => setModalOpen(false)}
+              isOpen={modalOpen}
+              title="Create a New Post"
+              width="large"
+            >
+              <CreateContentForm />
+            </Modal>
+            <Box>
+              <Button
+                label="New Post"
+                margin={{ right: "xsmall" }}
+                onClick={() => setModalOpen(!modalOpen)}
+              />
+            </Box>
+            <Menu
+              a11yTitle="User Menu"
+              dropAlign={{ right: "right", top: "top" }}
+              icon={<MenuIcon color="brand" size="20px" />}
+              items={[
+                {
+                  label: "My Profile",
+                  onClick: () =>
+                    history.push(
+                      `/profile/${viewerQuery.data.viewer.profile.username}`
+                    )
+                },
+                { label: "Logout", onClick: logout }
+              ]}
+              justifyContent="end"
+            />
+          </Box>
         )}
       </Box>
     </header>
