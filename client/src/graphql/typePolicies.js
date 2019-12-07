@@ -3,6 +3,12 @@ export default {
     fields: {
       posts: {
         keyArgs: ["filter"]
+      },
+      searchPosts: {
+        keyArgs: ["query"]
+      },
+      searchProfiles: {
+        keyArgs: ["query"]
       }
     }
   }

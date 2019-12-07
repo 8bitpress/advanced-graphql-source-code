@@ -3,18 +3,19 @@ import { useQuery } from "@apollo/client";
 import queryString from "query-string";
 import React from "react";
 
-import { SEARCH_POSTS } from "../../graphql/queries";
+import { SEARCH_POSTS, SEARCH_PROFILES } from "../../graphql/queries";
 import { updateFieldPageResults } from "../../lib/updateQueries";
 import ContentList from "../../components/ContentList";
 import Loader from "../../components/Loader";
 import LoadMoreButton from "../../components/LoadMoreButton";
 import MainLayout from "../../layouts/MainLayout";
+import ProfileList from "../../components/ProfileList";
 import SearchForm from "../../components/SearchForm";
 
 const Search = ({ location }) => {
   const { text, type } = queryString.parse(location.search);
 
-  const SEARCH_QUERY = SEARCH_POSTS;
+  const SEARCH_QUERY = type === "searchPosts" ? SEARCH_POSTS : SEARCH_PROFILES;
   const { data, fetchMore, loading } = useQuery(SEARCH_QUERY, {
     variables: { query: { text: text || "" } }
   });
@@ -35,7 +36,11 @@ const Search = ({ location }) => {
         <SearchForm />
         {data && data[type] && data[type].edges.length ? (
           <>
-            <ContentList contentData={data[type].edges} />
+            {data.searchPosts ? (
+              <ContentList contentData={data[type].edges} />
+            ) : (
+              <ProfileList profileData={data[type].edges} />
+            )}
             {data[type].pageInfo.hasNextPage && (
               <Box direction="row" justify="center">
                 <LoadMoreButton

@@ -144,3 +144,18 @@ export const SEARCH_POSTS = gql`
   ${basicPost}
   ${postsNextPage}
 `;
+
+export const SEARCH_PROFILES = gql`
+  query SEARCH_PROFILES($cursor: String, $query: ProfileSearchInput!) {
+    searchProfiles(first: 30, after: $cursor, query: $query) {
+      edges {
+        node {
+          ...basicProfile
+        }
+      }
+      ...profilesNextPage
+    }
+  }
+  ${basicProfile}
+  ${profilesNextPage}
+`;

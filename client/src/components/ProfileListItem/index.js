@@ -1,12 +1,14 @@
 import { Anchor, Box, Button, Image, Text } from "grommet";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import React from "react";
 
-const ProfileListItem = ({ profileData }) => {
+import HoverBox from "../HoverBox";
+
+const ProfileListItem = ({ history, profileData }) => {
   const { avatar, description, fullName, username } = profileData;
 
   return (
-    <Box
+    <HoverBox
       border={{
         color: "light-4",
         size: "xsmall",
@@ -14,6 +16,9 @@ const ProfileListItem = ({ profileData }) => {
         side: "bottom"
       }}
       direction="row"
+      onClick={() => {
+        history.push(`/profile/${username}`);
+      }}
       pad={{ left: "small", top: "medium", right: "small" }}
     >
       <Box
@@ -39,10 +44,12 @@ const ProfileListItem = ({ profileData }) => {
         </Text>
       </Box>
       <Box>
-        <Button label="Unfollow" onClick={() => console.log("Clicked")} />
+        <Box onClick={event => event.stopPropagation()}>
+          <Button label="Unfollow" onClick={() => console.log("Clicked")} />
+        </Box>
       </Box>
-    </Box>
+    </HoverBox>
   );
 };
 
-export default ProfileListItem;
+export default withRouter(ProfileListItem);
