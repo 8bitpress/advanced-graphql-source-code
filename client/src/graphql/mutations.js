@@ -19,6 +19,17 @@ export const CREATE_PROFILE = gql`
   ${basicProfile}
 `;
 
+export const CREATE_REPLY = gql`
+  mutation CREATE_REPLY($data: CreateReplyInput!) {
+    createReply(data: $data) {
+      id
+      post {
+        id
+      }
+    }
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATE_PROFILE(
     $data: UpdateProfileInput!

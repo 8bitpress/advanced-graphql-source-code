@@ -5,6 +5,7 @@ import React from "react";
 import { displayRelativeDateOrTime } from "../../lib/displayDatetime";
 import { useAuth } from "../../context/AuthContext";
 import HoverBox from "../HoverBox";
+import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const ContentListItem = ({ contentData, history }) => {
@@ -81,9 +82,16 @@ const ContentListItem = ({ contentData, history }) => {
           </Text>
         )}
         <Box align="center" direction="row" margin={{ top: "small" }}>
-          <Text as="p" color="dark-3" size="small">
+          <Text as="p" color="dark-3" size="small" margin={{ right: "small" }}>
             {displayRelativeDateOrTime(createdAt)}
           </Text>
+          {parentPostAuthor === undefined && !isBlocked && (
+            <NewReplyModal
+              iconSize="18px"
+              postData={{ author, createdAt, id, text }}
+              showButtonLabel={false}
+            />
+          )}
         </Box>
       </Box>
     </HoverBox>

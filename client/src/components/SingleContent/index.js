@@ -4,6 +4,7 @@ import React from "react";
 
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import { useAuth } from "../../context/AuthContext";
+import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const SingleContent = ({ contentData }) => {
@@ -16,6 +17,7 @@ const SingleContent = ({ contentData }) => {
   const {
     author,
     createdAt,
+    id,
     isBlocked,
     postAuthor: parentPostAuthor,
     text
@@ -83,6 +85,14 @@ const SingleContent = ({ contentData }) => {
           {displayFullDatetime(createdAt)}
         </Text>
       </Box>
+      {parentPostAuthor === undefined && !isBlocked && (
+        <Box margin={{ top: "medium" }}>
+          <NewReplyModal
+            iconSize="18px"
+            postData={{ author, createdAt, id, text }}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
