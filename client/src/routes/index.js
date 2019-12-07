@@ -10,6 +10,7 @@ import PrivateRoute from "../components/PrivateRoute";
 import Profile from "../pages/Profile";
 import ProfileSettings from "../pages/Settings/Profile";
 import Reply from "../pages/Reply";
+import Search from "../pages/Search";
 
 const Routes = () => (
   <Switch>
@@ -27,6 +28,7 @@ const Routes = () => (
     />
     <PrivateRoute exact path="/post/:id" component={Post} />
     <PrivateRoute exact path="/reply/:id" component={Reply} />
+    <PrivateRoute exact path="/search" component={Search} />
     <PrivateRoute component={NotFound} />
   </Switch>
 );

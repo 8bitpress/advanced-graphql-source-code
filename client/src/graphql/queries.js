@@ -129,3 +129,18 @@ export const GET_VIEWER = gql`
   }
   ${basicProfile}
 `;
+
+export const SEARCH_POSTS = gql`
+  query SEARCH_POSTS($cursor: String, $query: PostSearchInput!) {
+    searchPosts(first: 30, after: $cursor, query: $query) {
+      edges {
+        node {
+          ...basicPost
+        }
+      }
+      ...postsNextPage
+    }
+  }
+  ${basicPost}
+  ${postsNextPage}
+`;

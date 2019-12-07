@@ -1,30 +1,22 @@
 import { Box, Text } from "grommet";
 import { useQuery } from "@apollo/client";
+import queryString from "query-string";
 import React from "react";
 
-import { GET_POSTS } from "../../graphql/queries";
+import { SEARCH_POSTS } from "../../graphql/queries";
 import { updateFieldPageResults } from "../../lib/updateQueries";
-import { useAuth } from "../../context/AuthContext";
 import ContentList from "../../components/ContentList";
 import Loader from "../../components/Loader";
 import LoadMoreButton from "../../components/LoadMoreButton";
 import MainLayout from "../../layouts/MainLayout";
 import SearchForm from "../../components/SearchForm";
 
-const Home = () => {
-  const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+const Search = ({ location }) => {
+  const { text, type } = queryString.parse(location.search);
 
-  const { data, fetchMore, loading } = useQuery(GET_POSTS, {
-    variables: {
-      filter: {
-        followedBy: viewer.profile.username,
-        includeBlocked: false
-      }
-    }
+  const SEARCH_QUERY = SEARCH_POSTS;
+  const { data, fetchMore, loading } = useQuery(SEARCH_QUERY, {
+    variables: { query: { text: text || "" } }
   });
 
   if (loading) {
@@ -37,24 +29,22 @@ const Home = () => {
     );
   }
 
-  const { posts } = data;
-
   return (
     <MainLayout>
-      <Box margin={{ top: "medium" }}>
+      <Box margin={{ top: "small" }}>
         <SearchForm />
-        {posts.edges.length ? (
+        {data && data[type] && data[type].edges.length ? (
           <>
-            <ContentList contentData={posts.edges} />
-            {posts.pageInfo.hasNextPage && (
+            <ContentList contentData={data[type].edges} />
+            {data[type].pageInfo.hasNextPage && (
               <Box direction="row" justify="center">
                 <LoadMoreButton
                   onClick={() =>
                     fetchMore({
-                      variables: { cursor: posts.pageInfo.endCursor },
+                      variables: { cursor: data[type].pageInfo.endCursor },
                       updateQuery: (previousResult, { fetchMoreResult }) =>
                         updateFieldPageResults(
-                          "posts",
+                          type,
                           fetchMoreResult,
                           previousResult
                         )
@@ -65,11 +55,17 @@ const Home = () => {
             )}
           </>
         ) : (
-          <Text as="p">Nothing to display in your feed yet!</Text>
+          <Text as="p" margin={{ top: "small" }}>
+            {text &&
+            type &&
+            (type === "searchPosts" || type === "searchProfiles")
+              ? "Sorry, no results found for that search phrase!"
+              : "Submit a search query above to see results."}
+          </Text>
         )}
       </Box>
     </MainLayout>
   );
 };
 
-export default Home;
+export default Search;
