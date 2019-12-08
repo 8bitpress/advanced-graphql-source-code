@@ -45,7 +45,7 @@ const CreateContentForm = ({ history, parentPostId }) => {
           createPost({
             variables: {
               data: {
-                text: event.value.content,
+                text: event.value.text,
                 username: viewer.profile.username
               }
             }

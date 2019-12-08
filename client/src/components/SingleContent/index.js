@@ -4,6 +4,7 @@ import React from "react";
 
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import { useAuth } from "../../context/AuthContext";
+import DeleteContentModal from "../DeleteContentModal";
 import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
@@ -19,6 +20,7 @@ const SingleContent = ({ contentData }) => {
     createdAt,
     id,
     isBlocked,
+    post: parentPost,
     postAuthor: parentPostAuthor,
     text
   } = contentData;
@@ -81,9 +83,17 @@ const SingleContent = ({ contentData }) => {
         )}
       </Box>
       <Box align="center" direction="row" margin={{ top: "small" }}>
-        <Text as="p" color="dark-3" size="small">
+        <Text as="p" color="dark-3" size="small" margin={{ right: "small" }}>
           {displayFullDatetime(createdAt)}
         </Text>
+        {author.username === viewer.profile.username && (
+          <DeleteContentModal
+            iconSize="18px"
+            id={id}
+            isReply={parentPost !== undefined}
+            parentPostId={parentPost && parentPost.id}
+          />
+        )}
       </Box>
       {parentPostAuthor === undefined && !isBlocked && (
         <Box margin={{ top: "medium" }}>

@@ -30,6 +30,18 @@ export const CREATE_REPLY = gql`
   }
 `;
 
+export const DELETE_POST = gql`
+  mutation DELETE_POST($where: ContentWhereUniqueInput!) {
+    deletePost(where: $where)
+  }
+`;
+
+export const DELETE_REPLY = gql`
+  mutation DELETE_REPLY($where: ContentWhereUniqueInput!) {
+    deleteReply(where: $where)
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATE_PROFILE(
     $data: UpdateProfileInput!
