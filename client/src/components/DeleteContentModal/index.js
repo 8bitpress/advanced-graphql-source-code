@@ -5,6 +5,11 @@ import { withRouter } from "react-router-dom";
 import React, { useState } from "react";
 
 import { DELETE_POST, DELETE_REPLY } from "../../graphql/mutations";
+import {
+  GET_POST,
+  GET_POSTS,
+  GET_PROFILE_CONTENT
+} from "../../graphql/queries";
 import { useAuth } from "../../context/AuthContext";
 import Modal from "../Modal";
 
@@ -26,8 +31,36 @@ const DeleteContentModal = ({
     setModalOpen(false);
     history.push("/home");
   };
-  const [deletePost, { loading }] = useMutation(DELETE_POST, { onCompleted });
-  const [deleteReply] = useMutation(DELETE_REPLY, { onCompleted });
+  const [deletePost, { loading }] = useMutation(DELETE_POST, {
+    onCompleted,
+    refetchQueries: () => [
+      {
+        query: GET_POSTS,
+        variables: {
+          filter: {
+            followedBy: viewer.profile.username,
+            includeBlocked: false
+          }
+        }
+      },
+      {
+        query: GET_PROFILE_CONTENT,
+        variables: { username: viewer.profile.username }
+      }
+    ]
+  });
+  const [deleteReply] = useMutation(DELETE_REPLY, {
+    onCompleted,
+    refetchQueries: () => [
+      ...(parentPostId
+        ? [{ query: GET_POST, variables: { id: parentPostId } }]
+        : []),
+      {
+        query: GET_PROFILE_CONTENT,
+        variables: { username: viewer.profile.username }
+      }
+    ]
+  });
 
   return (
     <Box direction="row" onClick={event => event.stopPropagation()}>

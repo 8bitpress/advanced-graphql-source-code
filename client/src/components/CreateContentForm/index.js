@@ -24,13 +24,34 @@ const CreateContentForm = ({ history, parentPostId }) => {
   const [createPost, { loading }] = useMutation(CREATE_POST, {
     onCompleted: ({ createPost: { id } }) => {
       history.push(`/post/${id}`);
-    }
-    // refetchQueries: () => [GET_POSTS, GET_PROFILE_CONTENT]
+    },
+    refetchQueries: () => [
+      {
+        query: GET_POSTS,
+        variables: {
+          filter: {
+            followedBy: viewer.profile.username,
+            includeBlocked: false
+          }
+        }
+      },
+      {
+        query: GET_PROFILE_CONTENT,
+        variables: { username: viewer.profile.username }
+      }
+    ]
   });
   const [createReply] = useMutation(CREATE_REPLY, {
     onCompleted: ({ createReply: { id } }) => {
       history.push(`/reply/${id}`);
-    }
+    },
+    refetchQueries: () => [
+      { query: GET_POST, variables: { id: parentPostId } },
+      {
+        query: GET_PROFILE_CONTENT,
+        variables: { username: viewer.profile.username }
+      }
+    ]
   });
 
   return (
