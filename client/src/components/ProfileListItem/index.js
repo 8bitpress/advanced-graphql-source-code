@@ -1,11 +1,52 @@
 import { Anchor, Box, Button, Image, Text } from "grommet";
 import { Link, withRouter } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 import React from "react";
+import queryString from "query-string";
 
+import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
+import {
+  updateProfileContentFollowing,
+  updateSearchProfilesFollowing
+} from "../../lib/updateQueries";
+import { useAuth } from "../../context/AuthContext";
 import HoverBox from "../HoverBox";
 
-const ProfileListItem = ({ history, profileData }) => {
-  const { avatar, description, fullName, username } = profileData;
+const ProfileListItem = ({ history, location, match, profileData }) => {
+  const {
+    avatar,
+    description,
+    fullName,
+    id,
+    username,
+    viewerIsFollowing
+  } = profileData;
+
+  const {
+    viewerQuery: {
+      data: { viewer }
+    }
+  } = useAuth();
+
+  const update = cache => {
+    if (match.params.username) {
+      updateProfileContentFollowing(cache, id, match.params.username);
+    } else if (location.pathname === "/search/") {
+      const { text } = queryString.parse(location.search);
+      updateSearchProfilesFollowing(cache, id, text);
+    }
+  };
+  const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE, { update });
+  const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE, { update });
+
+  const variables = {
+    data: {
+      followingProfileId: id
+    },
+    where: {
+      username: viewer.profile.username
+    }
+  };
 
   return (
     <HoverBox
@@ -43,11 +84,22 @@ const ProfileListItem = ({ history, profileData }) => {
           {description}
         </Text>
       </Box>
-      <Box>
+      {viewer.profile.username !== username && (
         <Box onClick={event => event.stopPropagation()}>
-          <Button label="Unfollow" onClick={() => console.log("Clicked")} />
+          <Button
+            disabled={loading}
+            label={viewerIsFollowing ? "Unfollow" : "Follow"}
+            onClick={() => {
+              if (viewerIsFollowing) {
+                unfollowProfile({ variables });
+              } else {
+                followProfile({ variables });
+              }
+            }}
+            primary={!viewerIsFollowing}
+          />
         </Box>
-      </Box>
+      )}
     </HoverBox>
   );
 };

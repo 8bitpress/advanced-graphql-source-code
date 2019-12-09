@@ -1,3 +1,7 @@
+import update from "immutability-helper";
+
+import { GET_PROFILE_CONTENT, SEARCH_PROFILES } from "../graphql/queries";
+
 export function updateFieldPageResults(field, fetchMoreResult, previousResult) {
   const { edges: newEdges, pageInfo } = fetchMoreResult[field];
 
@@ -10,6 +14,57 @@ export function updateFieldPageResults(field, fetchMoreResult, previousResult) {
         }
       }
     : previousResult;
+}
+
+export function updateProfileContentFollowing(cache, followingId, username) {
+  let { profile } = cache.readQuery({
+    query: GET_PROFILE_CONTENT,
+    variables: { username }
+  });
+  const followingIndex = profile.following.edges.findIndex(
+    item => item.node.id === followingId
+  );
+  const isFollowing =
+    profile.following.edges[followingIndex].node.viewerIsFollowing;
+  const updatedProfile = update(profile, {
+    following: {
+      edges: {
+        [followingIndex]: {
+          node: { viewerIsFollowing: { $set: !isFollowing } }
+        }
+      }
+    }
+  });
+
+  cache.writeQuery({
+    query: GET_PROFILE_CONTENT,
+    data: { profile: updatedProfile }
+  });
+}
+
+export function updateSearchProfilesFollowing(cache, followingId, text) {
+  let { searchProfiles } = cache.readQuery({
+    query: SEARCH_PROFILES,
+    variables: { query: { text } }
+  });
+
+  const followingIndex = searchProfiles.edges.findIndex(
+    item => item.node.id === followingId
+  );
+  const isFollowing =
+    searchProfiles.edges[followingIndex].node.viewerIsFollowing;
+  const updatedSearchProfiles = update(searchProfiles, {
+    edges: {
+      [followingIndex]: {
+        node: { viewerIsFollowing: { $set: !isFollowing } }
+      }
+    }
+  });
+
+  cache.writeQuery({
+    query: SEARCH_PROFILES,
+    data: { searchProfiles: updatedSearchProfiles }
+  });
 }
 
 export function updateSubfieldPageResults(
