@@ -4,6 +4,11 @@ import { withRouter } from "react-router-dom";
 import React, { useState } from "react";
 
 import { CREATE_POST, CREATE_REPLY } from "../../graphql/mutations";
+import {
+  GET_POST,
+  GET_POSTS,
+  GET_PROFILE_CONTENT
+} from "../../graphql/queries";
 import { useAuth } from "../../context/AuthContext";
 import CharacterCountLabel from "../CharacterCountLabel";
 import Loader from "../Loader";
@@ -20,6 +25,7 @@ const CreateContentForm = ({ history, parentPostId }) => {
     onCompleted: ({ createPost: { id } }) => {
       history.push(`/post/${id}`);
     }
+    // refetchQueries: () => [GET_POSTS, GET_PROFILE_CONTENT]
   });
   const [createReply] = useMutation(CREATE_REPLY, {
     onCompleted: ({ createReply: { id } }) => {

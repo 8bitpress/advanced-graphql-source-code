@@ -44,7 +44,6 @@ class ContentDataSource extends DataSource {
   }
 
   async createReply({ username, text, postId }) {
-    console.log(postId);
     const post = await this.Post.findById(postId).exec();
     const profile = await this.Profile.findOne({ username }).exec();
 

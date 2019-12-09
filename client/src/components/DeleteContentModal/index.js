@@ -21,16 +21,13 @@ const DeleteContentModal = ({
       data: { viewer }
     }
   } = useAuth();
-  const [deletePost, { loading }] = useMutation(DELETE_POST, {
-    onCompleted: () => {
-      history.push(`/home`);
-    }
-  });
-  const [deleteReply] = useMutation(DELETE_REPLY, {
-    onCompleted: () => {
-      history.push(`/home`);
-    }
-  });
+
+  const onCompleted = () => {
+    setModalOpen(false);
+    history.push("/home");
+  };
+  const [deletePost, { loading }] = useMutation(DELETE_POST, { onCompleted });
+  const [deleteReply] = useMutation(DELETE_REPLY, { onCompleted });
 
   return (
     <Box direction="row" onClick={event => event.stopPropagation()}>
@@ -48,14 +45,13 @@ const DeleteContentModal = ({
         <Box direction="row" justify="end">
           <Button
             color="status-critical"
+            disabled={loading}
             label="Delete"
-            onClick={async () => {
+            onClick={() => {
               if (isReply) {
-                await deleteReply({ variables: { where: { id } } });
+                deleteReply({ variables: { where: { id } } });
               } else {
-                await deletePost({
-                  variables: { where: { id } }
-                });
+                deletePost({ variables: { where: { id } } });
               }
             }}
             primary
@@ -65,7 +61,7 @@ const DeleteContentModal = ({
       <Button
         a11yTitle="Delete"
         icon={<Trash color="status-critical" size={iconSize} />}
-        onClick={() => setModalOpen(!modalOpen)}
+        onClick={() => setModalOpen(true)}
       />
     </Box>
   );
