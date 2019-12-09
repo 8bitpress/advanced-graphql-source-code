@@ -1,30 +1,65 @@
 import { Box, Button, Heading, Image, Text } from "grommet";
+import { useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
 import React from "react";
 
 import { useAuth } from "../../context/AuthContext";
+import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
 
-const ProfileHeader = ({ history, profileData }) => {
-  const { account, avatar, description, fullName, username } = profileData;
+const ProfileHeader = ({ history, profileData, refetchProfile }) => {
+  const {
+    account,
+    avatar,
+    description,
+    fullName,
+    id,
+    username,
+    viewerIsFollowing
+  } = profileData;
 
   const {
     viewerQuery: {
       data: { viewer }
     }
   } = useAuth();
+  const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE);
+  const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE);
+
+  const variables = {
+    data: {
+      followingProfileId: id
+    },
+    where: {
+      username: viewer.profile.username
+    }
+  };
 
   const renderButton = () => {
+    let label, onClick;
+
     if (username === viewer.profile.username) {
-      return (
-        <Button
-          label="Edit Profile"
-          onClick={() => history.push("/settings/profile")} // NEW!
-          primary
-        />
-      );
+      label = "Edit Profile";
+      onClick = () => {
+        history.push("/settings/profile");
+      };
+    } else if (viewerIsFollowing) {
+      label = "Unfollow";
+      onClick = async () => {
+        await unfollowProfile({ variables });
+        refetchProfile();
+      };
+    } else {
+      label = "Follow";
+      onClick = async () => {
+        await followProfile({ variables });
+        refetchProfile();
+      };
     }
-    return null;
+
+    return (
+      <Button disabled={loading} label={label} onClick={onClick} primary />
+    );
   };
 
   return (

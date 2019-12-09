@@ -42,6 +42,28 @@ export const DELETE_REPLY = gql`
   }
 `;
 
+export const FOLLOW_PROFILE = gql`
+  mutation FOLLOW_PROFILE(
+    $data: FollowingProfileInput!
+    $where: ProfileWhereUniqueInput!
+  ) {
+    followProfile(data: $data, where: $where) {
+      id
+    }
+  }
+`;
+
+export const UNFOLLOW_PROFILE = gql`
+  mutation UNFOLLOW_PROFILE(
+    $data: FollowingProfileInput!
+    $where: ProfileWhereUniqueInput!
+  ) {
+    unfollowProfile(data: $data, where: $where) {
+      id
+    }
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATE_PROFILE(
     $data: UpdateProfileInput!
