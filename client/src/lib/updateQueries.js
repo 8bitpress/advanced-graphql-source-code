@@ -16,6 +16,34 @@ export function updateFieldPageResults(field, fetchMoreResult, previousResult) {
     : previousResult;
 }
 
+export function updateProfileContentAuthor(cache, username, updatedAuthor) {
+  let { profile } = cache.readQuery({
+    query: GET_PROFILE_CONTENT,
+    variables: { username }
+  });
+  const updatedPostsEdges = profile.posts.edges.map(edge =>
+    update(edge.node, {
+      $set: { ...edge.node.author, ...updatedAuthor }
+    })
+  );
+  const updatedRepliesEdges = profile.replies.edges.map(edge =>
+    update(edge.node, {
+      $set: { ...edge.node.author, ...updatedAuthor }
+    })
+  );
+
+  cache.writeQuery({
+    query: GET_PROFILE_CONTENT,
+    data: {
+      profile: {
+        ...profile,
+        posts: { ...profile.posts, edges: updatedPostsEdges },
+        replies: { ...profile.replies, edges: updatedRepliesEdges }
+      }
+    }
+  });
+}
+
 export function updateProfileContentFollowing(cache, followingId, username) {
   let { profile } = cache.readQuery({
     query: GET_PROFILE_CONTENT,

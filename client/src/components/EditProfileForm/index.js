@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { GET_VIEWER } from "../../graphql/queries";
 import { UPDATE_PROFILE } from "../../graphql/mutations";
+import { updateProfileContentAuthor } from "../../lib/updateQueries";
 import CharacterCountLabel from "../CharacterCountLabel";
 import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
@@ -23,6 +24,7 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
         query: GET_VIEWER,
         data: { viewer: viewerWithProfile }
       });
+      updateProfileContentAuthor(cache, profileData.username, updateProfile);
       updateViewer(viewerWithProfile);
     },
     onCompleted: () => {
