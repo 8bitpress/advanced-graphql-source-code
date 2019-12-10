@@ -12,13 +12,15 @@
     "immutability-helper": "^3.0.1",
     "js-cookie": "^2.2.1",
     "moment": "^2.24.0",
+    "password-validator": "^5.0.3",
     "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "styled-components": "^4.4.1",
-    "styled-reset": "^4.0.8"
+    "styled-reset": "^4.0.8",
+    "validator": "^12.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

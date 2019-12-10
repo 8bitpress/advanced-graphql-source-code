@@ -57,6 +57,10 @@ const NavBar = ({ history, location }) => {
                       `/profile/${viewerQuery.data.viewer.profile.username}`
                     )
                 },
+                {
+                  label: "Account Settings",
+                  onClick: () => history.push("/settings/account")
+                },
                 { label: "Logout", onClick: logout }
               ]}
               justifyContent="end"

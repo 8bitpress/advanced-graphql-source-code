@@ -106,6 +106,17 @@ export const UNFOLLOW_PROFILE = gql`
   }
 `;
 
+export const UPDATE_ACCOUNT = gql`
+  mutation UPDATE_ACCOUNT(
+    $data: UpdateAccountInput!
+    $where: AccountWhereUniqueInput!
+  ) {
+    updateAccount(data: $data, where: $where) {
+      id
+    }
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATE_PROFILE(
     $data: UpdateProfileInput!

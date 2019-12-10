@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router";
 
+import AccountSettings from "../pages/Settings/Account";
 import Home from "../pages/Home";
 import Index from "../pages/Index";
 import Login from "../pages/Login";
@@ -29,6 +30,7 @@ const Routes = () => (
     <PrivateRoute exact path="/post/:id" component={Post} />
     <PrivateRoute exact path="/reply/:id" component={Reply} />
     <PrivateRoute exact path="/search" component={Search} />
+    <PrivateRoute exact path="/settings/account" component={AccountSettings} />
     <PrivateRoute component={NotFound} />
   </Switch>
 );

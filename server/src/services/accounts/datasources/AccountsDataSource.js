@@ -84,13 +84,13 @@ class AccountsDataSource extends DataSource {
 
     if (!email) {
       try {
-        const user = await auth0.getUser({ id });
+        const user = await this.auth0.getUser({ id });
         await getToken(user.email, password);
       } catch (error) {
         throw new UserInputError(error);
       }
 
-      return auth0.updateUser({ id }, { password: newPassword });
+      return this.auth0.updateUser({ id }, { password: newPassword });
     }
 
     return this.auth0.updateUser({ id }, { email });
