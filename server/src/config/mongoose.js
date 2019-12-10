@@ -15,6 +15,6 @@ export default function initMongoose() {
   });
 
   mongoose.connection.on("error", error => {
-    console.log(error("Mongoose default connection error:", error));
+    console.log("Mongoose default connection error:", error);
   });
 }
