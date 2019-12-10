@@ -4,8 +4,11 @@ import { withRouter } from "react-router-dom";
 import moment from "moment";
 import React from "react";
 
-import { useAuth } from "../../context/AuthContext";
 import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
+import { useAuth } from "../../context/AuthContext";
+import AccountBlockButton from "../AccountBlockButton";
+import ModeratorRoleButton from "../ModeratorRoleButton";
+import NotAvailableMessage from "../NotAvailableMessage";
 
 const ProfileHeader = ({ history, profileData, refetchProfile }) => {
   const {
@@ -85,12 +88,35 @@ const ProfileHeader = ({ history, profileData, refetchProfile }) => {
         <Text as="p" color="dark-3" margin={{ bottom: "medium" }}>
           @{username} {account.isModerator && "(Moderator)"}
         </Text>
+        {account.isBlocked && (
+          <NotAvailableMessage
+            margin={{ bottom: "medium" }}
+            text="This account has been temporarily suspended."
+          />
+        )}
         <Text as="p" margin={{ bottom: "small" }}>
           {description ? description : "404: description not found."}
         </Text>
-        <Text as="p" margin={{ bottom: "small" }}>
-          Joined {moment(account.createdAt).format("MMMM YYYY")}
-        </Text>
+
+        <Box align="center" direction="row" margin={{ bottom: "small" }}>
+          <Text as="p" margin={{ right: "xsmall" }}>
+            Joined {moment(account.createdAt).format("MMMM YYYY")}
+          </Text>
+          {viewer.isModerator && username !== viewer.profile.username && (
+            <AccountBlockButton
+              accountId={account.id}
+              iconSize="18px"
+              isBlocked={account.isBlocked}
+            />
+          )}
+          {viewer.isModerator && (
+            <ModeratorRoleButton
+              accountId={account.id}
+              iconSize="18px"
+              isModerator={account.isModerator}
+            />
+          )}
+        </Box>
       </Box>
       <Box alignSelf="start">{renderButton()}</Box>
     </Box>

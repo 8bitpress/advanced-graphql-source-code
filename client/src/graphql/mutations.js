@@ -2,6 +2,30 @@ import { gql } from "@apollo/client";
 
 import { basicProfile } from "./fragments";
 
+export const BLOCK_ACCOUNT = gql`
+  mutation BLOCK_ACCOUNT(
+    $data: BlockAccountInput!
+    $where: AccountWhereUniqueInput!
+  ) {
+    blockAccount(data: $data, where: $where) {
+      id
+      isBlocked
+    }
+  }
+`;
+
+export const CHANGE_ACCOUNT_MODERATOR_ROLE = gql`
+  mutation CHANGE_ACCOUNT_MODERATOR_ROLE(
+    $data: ChangeAccountModeratorRoleInput!
+    $where: AccountWhereUniqueInput!
+  ) {
+    changeAccountModeratorRole(data: $data, where: $where) {
+      id
+      isModerator
+    }
+  }
+`;
+
 export const CREATE_POST = gql`
   mutation CREATE_POST($data: CreatePostInput!) {
     createPost(data: $data) {
