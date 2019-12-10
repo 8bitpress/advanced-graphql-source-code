@@ -60,7 +60,13 @@ const ContentListItem = ({ contentData, history }) => {
           <Text as="p">
             <Text weight="bold">{author.fullName}</Text>{" "}
             <Link to={`/profile/${author.username}`}>
-              <Anchor color="dark-4" as="span">
+              <Anchor
+                color="dark-4"
+                as="span"
+                onClick={event => {
+                  event.stopPropagation();
+                }}
+              >
                 @{author.username}
               </Anchor>
             </Link>

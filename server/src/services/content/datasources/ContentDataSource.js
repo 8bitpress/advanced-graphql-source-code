@@ -128,7 +128,7 @@ class ContentDataSource extends DataSource {
     }
 
     if (rawFilter && rawFilter.includeBlocked === false) {
-      filter.blocked = false || undefined;
+      filter.blocked = { $in: [null, false] };
     }
 
     const sort = this.getContentSort(orderBy);

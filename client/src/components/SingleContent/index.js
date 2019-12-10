@@ -4,6 +4,7 @@ import React from "react";
 
 import { displayFullDatetime } from "../../lib/displayDatetime";
 import { useAuth } from "../../context/AuthContext";
+import ContentBlockButton from "../ContentBlockButton";
 import DeleteContentModal from "../DeleteContentModal";
 import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
@@ -92,6 +93,14 @@ const SingleContent = ({ contentData }) => {
             id={id}
             isReply={parentPost !== undefined}
             parentPostId={parentPost && parentPost.id}
+          />
+        )}
+        {viewer.isModerator && viewer.profile.username !== author.username && (
+          <ContentBlockButton
+            iconSize="18px"
+            id={id}
+            isBlocked={isBlocked}
+            isReply={parentPost !== undefined}
           />
         )}
       </Box>
