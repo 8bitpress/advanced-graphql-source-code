@@ -32,6 +32,8 @@
     "gravatar-url": "^3.1.0",
     "jwks-rsa": "^1.6.0",
     "mongoose": "^5.7.11",
+    "redis": "^2.8.0",
+    "rsmq": "^0.11.0",
     "validator": "^12.0.0"
   },
   "devDependencies": {
