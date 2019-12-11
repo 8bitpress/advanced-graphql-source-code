@@ -1,13 +1,13 @@
-import { Box } from "grommet";
+import { Box, Text } from "grommet";
 import React from "react";
 
 import StyledText from "./styles";
 
 const NotAvailableMessage = ({ text, ...rest }) => (
   <Box {...rest}>
-    <p>
+    <Text as="p">
       <StyledText>{text}</StyledText>
-    </p>
+    </Text>
   </Box>
 );
 

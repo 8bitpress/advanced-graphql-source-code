@@ -7,6 +7,7 @@ import validator from "validator";
 import { UPDATE_ACCOUNT } from "../../../graphql/mutations";
 import { useAuth } from "../../../context/AuthContext";
 import AccentButton from "../../../components/AccentButton";
+import DeleteAccountModal from "../../../components/DeleteAccountModal";
 import Loader from "../../../components/Loader";
 import MainLayout from "../../../layouts/MainLayout";
 import RequiredLabel from "../../../components/RequiredLabel";
@@ -154,6 +155,16 @@ const Account = () => {
             />
           </Box>
         </Form>
+      </Box>
+      <Box>
+        <Heading level={3} margin={{ bottom: "medium" }}>
+          Delete Account
+        </Heading>
+        <Text as="p" color="dark-2" margin={{ bottom: "medium" }}>
+          Danger zone! Click this button to permanently delete your account and
+          all of its data:
+        </Text>
+        <DeleteAccountModal accountId={viewer.id} />
       </Box>
     </MainLayout>
   );

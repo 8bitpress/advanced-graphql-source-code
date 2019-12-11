@@ -7,6 +7,7 @@ import { GET_REPLY } from "../../graphql/queries";
 import ContentListItem from "../../components/ContentListItem";
 import Loader from "../../components/Loader";
 import MainLayout from "../../layouts/MainLayout";
+import NotAvailableMessage from "../../components/NotAvailableMessage";
 import NotFound from "../NotFound";
 import SingleContent from "../../components/SingleContent";
 
@@ -30,7 +31,11 @@ const Reply = ({ match }) => {
 
     return (
       <MainLayout>
-        <ContentListItem contentData={reply.post} />
+        {reply.post ? (
+          <ContentListItem contentData={reply.post} />
+        ) : (
+          <NotAvailableMessage text="This reply's parent post no longer exists." />
+        )}
         <SingleContent contentData={reply} />
       </MainLayout>
     );

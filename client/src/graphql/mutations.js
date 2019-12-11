@@ -54,6 +54,12 @@ export const CREATE_REPLY = gql`
   }
 `;
 
+export const DELETE_ACCOUNT = gql`
+  mutation DELETE_ACCOUNT($where: AccountWhereUniqueInput!) {
+    deleteAccount(where: $where)
+  }
+`;
+
 export const DELETE_POST = gql`
   mutation DELETE_POST($where: ContentWhereUniqueInput!) {
     deletePost(where: $where)
