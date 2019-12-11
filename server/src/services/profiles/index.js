@@ -2,6 +2,11 @@ import { ApolloServer } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
+import {
+  initDeleteAccountQueue,
+  initDeleteProfileQueue,
+  onDeleteAccount
+} from "./queues";
 import auth0 from "../../config/auth0";
 import initMongoose from "../../config/mongoose";
 import permissions from "./permissions";
@@ -12,6 +17,15 @@ import typeDefs from "./typeDefs";
 
 (async () => {
   const port = process.env.PROFILES_SERVICE_PORT;
+  const deleteAccountQueue = await initDeleteAccountQueue();
+  const deleteProfileQueue = await initDeleteProfileQueue();
+
+  deleteAccountQueue.listen(
+    { interval: 5000, maxReceivedCount: 5 },
+    payload => {
+      onDeleteAccount(payload, deleteProfileQueue);
+    }
+  );
 
   const schema = applyMiddleware(
     buildFederatedSchema([{ typeDefs, resolvers }]),

@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { applyMiddleware } from "graphql-middleware";
 import { buildFederatedSchema } from "@apollo/federation";
 
+import { initDeleteAccountQueue } from "./queues";
 import AccountsDataSource from "./datasources/AccountsDataSource";
 import auth0 from "../../config/auth0";
 import permissions from "./permissions";
@@ -10,6 +11,7 @@ import typeDefs from "./typeDefs";
 
 (async () => {
   const port = process.env.ACCOUNTS_SERVICE_PORT;
+  const deleteAccountQueue = await initDeleteAccountQueue();
 
   const schema = applyMiddleware(
     buildFederatedSchema([{ typeDefs, resolvers }]),
@@ -20,7 +22,7 @@ import typeDefs from "./typeDefs";
     schema,
     context: ({ req }) => {
       const user = req.headers.user ? JSON.parse(req.headers.user) : null;
-      return { user };
+      return { user, queues: { deleteAccountQueue } };
     },
     dataSources: () => {
       return {

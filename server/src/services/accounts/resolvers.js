@@ -68,8 +68,21 @@ const resolvers = {
     ) {
       return dataSources.accountsAPI.createAccount(email, password);
     },
-    deleteAccount(parent, { where: { id } }, { dataSources }, info) {
-      return dataSources.accountsAPI.deleteAccount(id);
+    async deleteAccount(
+      parent,
+      { where: { id } },
+      { dataSources, queues },
+      info
+    ) {
+      const accountDeleted = await dataSources.accountsAPI.deleteAccount(id);
+
+      if (accountDeleted) {
+        await queues.deleteAccountQueue.sendMessage(
+          JSON.stringify({ accountId: id })
+        );
+      }
+
+      return accountDeleted;
     },
     updateAccount(parent, { data, where: { id } }, { dataSources }, info) {
       return dataSources.accountsAPI.updateAccount(id, data);

@@ -6,7 +6,7 @@ const port = process.env.REDIS_PORT;
 const client = redis.createClient({ host, port });
 
 client.on("connect", () => {
-  console.log(`Redis connection ready at http://${host}:${port}`);
+  console.log(`Redis connection ready at http://${host}:${port}/`);
 });
 
 client.on("error", error => {
