@@ -1,6 +1,6 @@
-import { Box, Button, Form, FormField, Text } from "grommet";
+import { Box, Button, Form, FormField, Image, Text, TextInput } from "grommet";
 import { useMutation } from "@apollo/client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { GET_VIEWER } from "../../graphql/queries";
 import { UPDATE_PROFILE } from "../../graphql/mutations";
@@ -10,11 +10,14 @@ import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
 const EditProfileForm = ({ profileData, updateViewer }) => {
-  const { description, fullName, username } = profileData;
+  const { avatar, description, fullName, username } = profileData;
+  const validFormats = ["image/jpeg", "image/jpg", "image/png"];
 
+  const avatarInput = useRef();
   const [descCharCount, setDescCharCount] = useState(
     (description && description.length) || 0
   );
+  const [imageFile, setImageFile] = useState();
   const [showSavedMessage, setShowSavedMessage] = useState(false);
   const [updateProfile, { error, loading }] = useMutation(UPDATE_PROFILE, {
     update: (cache, { data: { updateProfile } }) => {
@@ -51,9 +54,16 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
       }}
       messages={{ required: "Required" }}
       onSubmit={event => {
+        const {
+          files: [file]
+        } = avatarInput.current;
+
         updateProfile({
           variables: {
-            data: { ...event.value },
+            data: {
+              ...event.value,
+              ...(file && { avatar: file })
+            },
             where: { username }
           }
         });
@@ -101,6 +111,50 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
         }}
         value={description || ""}
       />
+      <FormField
+        htmlFor="avatar"
+        id="avatar"
+        label="Avatar (choose a square image for best results)"
+        name="avatar"
+        validate={() => {
+          const {
+            files: [file]
+          } = avatarInput.current;
+
+          if (file && !validFormats.includes(file.type)) {
+            return "Upload JPG or PNG files only";
+          } else if (file && file.size > 2 * 1024 * 1024) {
+            return "Maximum file size is 2 MB";
+          }
+        }}
+      >
+        <Box
+          alignSelf="start"
+          height="36px"
+          margin={{ left: "small" }}
+          overflow="hidden"
+          round="full"
+          width="36px"
+        >
+          <Image
+            fit="cover"
+            src={imageFile || avatar}
+            alt={`${fullName} profile image`}
+          />
+        </Box>
+        <TextInput
+          accept={validFormats.join(", ")}
+          ref={avatarInput}
+          onChange={event => {
+            setImageFile(
+              event.target.files.length
+                ? URL.createObjectURL(event.target.files[0])
+                : null
+            );
+          }}
+          type="file"
+        />
+      </FormField>
       <Box align="center" direction="row" justify="end">
         {loading && <Loader size="medium" />}
         {showSavedMessage && <Text as="p">Changes saved!</Text>}

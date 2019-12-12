@@ -79,7 +79,9 @@ const Account = () => {
             htmlForm="email"
             label={<RequiredLabel>Email Address</RequiredLabel>}
             name="email"
-            onInput={event => setEmail(event.target.value)}
+            onInput={event => {
+              setEmail(event.target.value);
+            }}
             placeholder="Enter your updated email address"
             required
             validate={fieldData => {
@@ -123,7 +125,9 @@ const Account = () => {
             id="password"
             label={<RequiredLabel>Current Password</RequiredLabel>}
             name="password"
-            onInput={event => setPassword(event.target.value)}
+            onInput={event => {
+              setPassword(event.target.value);
+            }}
             placeholder="Confirm your current password"
             required
             type="password"
@@ -134,7 +138,9 @@ const Account = () => {
             id="newPassword"
             label={<RequiredLabel>New Password</RequiredLabel>}
             name="newPassword"
-            onInput={event => setNewPassword(event.target.value)}
+            onInput={event => {
+              setNewPassword(event.target.value);
+            }}
             placeholder="Enter your new password"
             required
             type="password"
