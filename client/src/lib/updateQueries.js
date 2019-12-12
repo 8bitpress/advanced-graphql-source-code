@@ -22,13 +22,13 @@ export function updateProfileContentAuthor(cache, username, updatedAuthor) {
     variables: { username }
   });
   const updatedPostsEdges = profile.posts.edges.map(edge =>
-    update(edge.node, {
-      $set: { ...edge.node.author, ...updatedAuthor }
+    update(edge, {
+      node: { author: { $set: { ...edge.node.author, ...updatedAuthor } } }
     })
   );
   const updatedRepliesEdges = profile.replies.edges.map(edge =>
-    update(edge.node, {
-      $set: { ...edge.node.author, ...updatedAuthor }
+    update(edge, {
+      node: { author: { $set: { ...edge.node.author, ...updatedAuthor } } }
     })
   );
 

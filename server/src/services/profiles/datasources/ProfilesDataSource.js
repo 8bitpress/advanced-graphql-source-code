@@ -1,6 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
+import { uploadStream } from "../../../lib/handleUploads";
 import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 
@@ -122,12 +123,43 @@ class ProfilesDataSource extends DataSource {
     ).exec();
   }
 
-  updateProfile(currentUsername, { description, fullName, username }) {
-    if (!description && !fullName && !username) {
+  async updateProfile(
+    currentUsername,
+    { avatar, description, fullName, username }
+  ) {
+    if (!avatar && !description && !fullName && !username) {
       throw new UserInputError("You must supply some profile data to update.");
     }
 
+    let uploadedAvatar;
+
+    if (avatar) {
+      const profile = await this.Profile.findOne({
+        username: currentUsername
+      }).exec();
+
+      if (!profile) {
+        throw new UserInputError("User with that username cannot be found.");
+      }
+
+      const buffer = Buffer.from(avatar.buffer.data);
+      uploadedAvatar = await uploadStream(buffer, {
+        folder: `${process.env.NODE_ENV}/${profile._id}`,
+        format: "png",
+        public_id: "avatar",
+        sign_url: true,
+        transformation: [
+          { aspect_ratio: "1:1", crop: "crop" },
+          { height: 400, width: 400, crop: "limit" }
+        ],
+        type: "authenticated"
+      }).catch(error => {
+        throw new Error(`Failed to upload profile picture. ${error.message}`);
+      });
+    }
+
     const data = {
+      ...(uploadedAvatar && { avatar: uploadedAvatar.secure_url }),
       ...(description && { description }),
       ...(fullName && { fullName }),
       ...(username && { username })

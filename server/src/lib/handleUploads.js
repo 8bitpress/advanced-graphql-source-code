@@ -1,3 +1,17 @@
+import cloudinary from "../config/cloudinary";
+
+function onReadStream(stream) {
+  return new Promise((resolve, reject) => {
+    let buffers = [];
+    stream.on("error", error => reject(error));
+    stream.on("data", data => buffers.push(data));
+    stream.on("end", () => {
+      const contents = Buffer.concat(buffers);
+      resolve(contents);
+    });
+  });
+}
+
 export async function readNestedFileStreams(variables) {
   const varArr = Object.entries(variables || {});
 
@@ -19,14 +33,15 @@ export async function readNestedFileStreams(variables) {
   return variables;
 }
 
-function onReadStream(stream) {
+export function uploadStream(buffer, options) {
   return new Promise((resolve, reject) => {
-    let buffers = [];
-    stream.on("error", error => reject(error));
-    stream.on("data", data => buffers.push(data));
-    stream.on("end", () => {
-      const contents = Buffer.concat(buffers);
-      resolve(contents);
-    });
+    cloudinary.uploader
+      .upload_stream(options, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(result);
+      })
+      .end(buffer);
   });
 }

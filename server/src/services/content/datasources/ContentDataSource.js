@@ -116,7 +116,7 @@ class ContentDataSource extends DataSource {
     if (rawFilter && rawFilter.followedBy) {
       const profile = await this.Profile.findOne({
         username: rawFilter.followedBy
-      });
+      }).exec();
 
       if (!profile) {
         throw new UserInputError("User with that username cannot be found.");
@@ -153,7 +153,7 @@ class ContentDataSource extends DataSource {
     }
 
     let filter = {};
-    const profile = await this.Profile.findOne({ username: from || to });
+    const profile = await this.Profile.findOne({ username: from || to }).exec();
 
     if (!profile) {
       throw new UserInputError("User with that username cannot be found.");
