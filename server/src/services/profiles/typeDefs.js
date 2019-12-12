@@ -1,6 +1,13 @@
 import { gql } from "apollo-server";
 
 const typeDefs = gql`
+  # SCALARS
+
+  """
+  The file upload type built into Apollo Server 2.0+.
+  """
+  scalar Upload
+
   # ENUMS
 
   """
@@ -57,6 +64,8 @@ const typeDefs = gql`
   Provides data to update an existing profile.
   """
   input UpdateProfileInput {
+    "The updated avatar data containing the stream, filename, mimetype, and encoding."
+    avatar: Upload
     "The updated user description."
     description: String
     "The update full name of the user."
