@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
-import { uploadStream } from "../../../lib/handleUploads";
+import { deleteUpload, uploadStream } from "../../../lib/handleUploads";
 import Pagination from "../../../lib/Pagination";
 
 class ContentDataSource extends DataSource {
@@ -242,11 +242,23 @@ class ContentDataSource extends DataSource {
   // DELETE
   async deletePost(id) {
     const deletedPost = await this.Post.findOneAndDelete({ _id: id }).exec();
+    const { media } = deletedPost;
+
+    if (media) {
+      await deleteUpload(media);
+    }
+
     return deletedPost._id;
   }
 
   async deleteReply(id) {
-    const deletedReply = await this.Reply.findOneAndDelete({ _id: id }).exec();
+    const deletedReply = await this.Reply.findByIdAndDelete(id).exec();
+    const { media } = deletedPost;
+
+    if (media) {
+      await deleteUpload(media);
+    }
+
     return deletedReply._id;
   }
 }
