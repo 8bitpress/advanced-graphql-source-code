@@ -37,9 +37,16 @@ class ProfilesDataSource extends DataSource {
           "Profile cannot be created for a user account that does not exist."
         );
       });
-    const { email } = account;
-    const avatar = gravatarUrl(email, { default: "mm" });
-    profile.avatar = avatar;
+    const { picture } = account;
+
+    if (picture && picture.includes("githubusercontent")) {
+      profile.avatar = picture;
+    } else {
+      const { email } = account;
+      const avatar = gravatarUrl(email, { default: "mm" });
+      profile.avatar = avatar;
+    }
+
     const newProfile = new this.Profile(profile);
 
     return newProfile.save();
