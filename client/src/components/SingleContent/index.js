@@ -21,6 +21,7 @@ const SingleContent = ({ contentData }) => {
     createdAt,
     id,
     isBlocked,
+    media,
     post: parentPost,
     postAuthor: parentPostAuthor,
     text
@@ -78,9 +79,18 @@ const SingleContent = ({ contentData }) => {
           />
         )}
         {(!isBlocked || author.username === viewer.profile.username) && (
-          <Text as="p" size="xlarge">
-            {text}
-          </Text>
+          <>
+            <Text as="p" size="xlarge">
+              {text}
+            </Text>
+            {media && (
+              <Image
+                margin={{ top: "small" }}
+                src={media}
+                alt="Content image"
+              />
+            )}
+          </>
         )}
       </Box>
       <Box align="center" direction="row" margin={{ top: "small" }}>

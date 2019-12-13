@@ -1,7 +1,17 @@
-import { Box, Button, Form, FormField, TextArea } from "grommet";
+import {
+  Box,
+  Button,
+  Form,
+  FormField,
+  Image, // UPDATED!
+  Stack, // UPDATED!
+  TextArea,
+  TextInput // UPDATED!
+} from "grommet";
+import { Close } from "grommet-icons";
 import { useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { CREATE_POST, CREATE_REPLY } from "../../graphql/mutations";
 import {
@@ -15,6 +25,10 @@ import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
 const CreateContentForm = ({ history, parentPostId }) => {
+  const validFormats = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
+
+  const mediaInput = useRef();
+  const [mediaFile, setMediaFile] = useState();
   const [contentCharCount, setContentCharCount] = useState(0);
   const {
     viewerQuery: {
@@ -55,65 +69,124 @@ const CreateContentForm = ({ history, parentPostId }) => {
   });
 
   return (
-    <Form
-      messages={{ required: "Required" }}
-      onSubmit={event => {
-        if (parentPostId) {
-          createReply({
-            variables: {
-              data: {
-                postId: parentPostId,
-                text: event.value.text,
-                username: viewer.profile.username
+    <Box fill="vertical" overflow="auto">
+      <Form
+        messages={{ required: "Required" }}
+        onSubmit={event => {
+          const {
+            files: [file]
+          } = mediaInput.current;
+
+          if (parentPostId) {
+            createReply({
+              variables: {
+                data: {
+                  ...(file && { media: file }),
+                  postId: parentPostId,
+                  text: event.value.text,
+                  username: viewer.profile.username
+                }
               }
-            }
-          });
-        } else {
-          createPost({
-            variables: {
-              data: {
-                text: event.value.text,
-                username: viewer.profile.username
+            });
+          } else {
+            createPost({
+              variables: {
+                data: {
+                  ...(file && { media: file }),
+                  text: event.value.text,
+                  username: viewer.profile.username
+                }
               }
-            }
-          });
-        }
-      }}
-    >
-      <FormField
-        component={TextArea}
-        htmlFor="text"
-        id="text"
-        label={
-          <RequiredLabel>
-            <CharacterCountLabel
-              currentChars={contentCharCount}
-              label="Content"
-              max={256}
-            />
-          </RequiredLabel>
-        }
-        name="text"
-        onInput={event => setContentCharCount(event.target.value.length)}
-        placeholder={`Write your ${parentPostId ? "reply" : "post"}`}
-        required
-        validate={fieldData => {
-          if (fieldData && fieldData.length > 256) {
-            return "256 maximum character count exceeded";
+            });
           }
         }}
-      />
-      <Box align="center" direction="row" justify="end">
-        {loading && <Loader size="medium" />}
-        <Button
-          disabled={loading}
-          label="Publish"
-          margin={{ right: "xsmall" }}
-          primary
-          type="submit"
+      >
+        <FormField
+          component={TextArea}
+          htmlFor="text"
+          id="text"
+          label={
+            <RequiredLabel>
+              <CharacterCountLabel
+                currentChars={contentCharCount}
+                label="Content"
+                max={256}
+              />
+            </RequiredLabel>
+          }
+          name="text"
+          onInput={event => setContentCharCount(event.target.value.length)}
+          placeholder={`Write your ${parentPostId ? "reply" : "post"}`}
+          required
+          validate={fieldData => {
+            if (fieldData && fieldData.length > 256) {
+              return "256 maximum character count exceeded";
+            }
+          }}
         />
-      </Box>
-    </Form>
+        <FormField
+          htmlFor="media"
+          id="media"
+          label="Image"
+          name="media"
+          validate={() => {
+            const {
+              files: [file]
+            } = mediaInput.current;
+
+            if (file && !validFormats.includes(file.type)) {
+              return "Upload GIF, JPG or PNG files only";
+            } else if (file && file.size > 5 * 1024 * 1024) {
+              return "Maximum file size is 5 MB";
+            }
+          }}
+        >
+          {mediaFile && (
+            <Stack anchor="top-left">
+              <Image src={mediaFile} alt="Uploaded content image" />
+              <Box
+                background="dark-1"
+                margin="xsmall"
+                overflow="hidden"
+                round="full"
+              >
+                <Button
+                  a11yTitle="Remove Image"
+                  hoverIndicator
+                  icon={<Close size="18px" />}
+                  onClick={() => {
+                    setMediaFile(null);
+                    mediaInput.current.value = "";
+                  }}
+                />
+              </Box>
+            </Stack>
+          )}
+          <TextInput
+            accept={validFormats.join(", ")}
+            onChange={event => {
+              setMediaFile(
+                event.target.files.length
+                  ? URL.createObjectURL(event.target.files[0])
+                  : null
+              );
+            }}
+            ref={mediaInput}
+            type="file"
+          />
+        </FormField>
+        <Box align="center" direction="row" justify="end">
+          {loading && <Loader size="medium" />}
+          <Button
+            disabled={loading}
+            label="Publish"
+            margin={{ bottom: "xsmall", left: "xsmall" }}
+            primary
+            type="submit"
+          />
+        </Box>
+      </Form>
+    </Box>
   );
 };
 

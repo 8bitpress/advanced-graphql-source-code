@@ -1,6 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
+import { uploadStream } from "../../../lib/handleUploads";
 import Pagination from "../../../lib/Pagination";
 
 class ContentDataSource extends DataSource {
@@ -28,8 +29,21 @@ class ContentDataSource extends DataSource {
     return sort;
   }
 
+  async uploadMedia(media, profileId) {
+    const buffer = Buffer.from(media.buffer.data);
+    const uploadedMedia = await uploadStream(buffer, {
+      folder: `${process.env.NODE_ENV}/${profileId}`,
+      sign_url: true,
+      type: "authenticated"
+    }).catch(error => {
+      throw new Error(`Failed to upload media. ${error.message}`);
+    });
+
+    return uploadedMedia.secure_url;
+  }
+
   // CREATE
-  async createPost({ username, text }) {
+  async createPost({ media, text, username }) {
     const profile = await this.Profile.findOne({ username }).exec();
 
     if (!profile) {
@@ -38,12 +52,22 @@ class ContentDataSource extends DataSource {
       );
     }
 
-    const newPost = new this.Post({ authorProfileId: profile._id, text });
+    let uploadedMediaUrl;
+
+    if (media) {
+      uploadedMediaUrl = await this.uploadMedia(media, profile._id);
+    }
+
+    const newPost = new this.Post({
+      ...(uploadedMediaUrl && { media: uploadedMediaUrl }),
+      authorProfileId: profile._id,
+      text
+    });
 
     return newPost.save();
   }
 
-  async createReply({ username, text, postId }) {
+  async createReply({ media, postId, text, username }) {
     const post = await this.Post.findById(postId).exec();
     const profile = await this.Profile.findOne({ username }).exec();
 

@@ -10,6 +10,7 @@ export const basicPost = gql`
     }
     createdAt
     isBlocked
+    media
     text
   }
 `;
@@ -34,6 +35,7 @@ export const basicReply = gql`
     }
     createdAt
     isBlocked
+    media
     post {
       id
     }

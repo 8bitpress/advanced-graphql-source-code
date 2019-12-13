@@ -21,6 +21,7 @@ const ContentListItem = ({ contentData, history }) => {
     createdAt,
     id,
     isBlocked,
+    media,
     post: parentPost,
     postAuthor: parentPostAuthor,
     text
@@ -91,9 +92,18 @@ const ContentListItem = ({ contentData, history }) => {
           />
         )}
         {(!isBlocked || author.username === viewer.profile.username) && (
-          <Text as="p" margin={{ top: "small" }}>
-            {text}
-          </Text>
+          <>
+            <Text as="p" margin={{ top: "small" }}>
+              {text}
+            </Text>
+            {media && (
+              <Image
+                src={media}
+                margin={{ top: "small" }}
+                alt="Content image"
+              />
+            )}
+          </>
         )}
         <Box align="center" direction="row" margin={{ top: "small" }}>
           <Text as="p" color="dark-3" size="small" margin={{ right: "small" }}>
