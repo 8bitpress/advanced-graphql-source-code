@@ -21,6 +21,7 @@ export const basicProfile = gql`
     avatar
     description
     fullName
+    githubUrl
     username
   }
 `;

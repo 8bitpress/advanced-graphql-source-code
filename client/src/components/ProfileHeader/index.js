@@ -1,4 +1,5 @@
-import { Box, Button, Heading, Image, Text } from "grommet";
+import { Anchor, Box, Button, Heading, Image, Text } from "grommet";
+import { Github } from "grommet-icons";
 import { useMutation } from "@apollo/client";
 import { withRouter } from "react-router-dom";
 import moment from "moment";
@@ -16,6 +17,7 @@ const ProfileHeader = ({ history, profileData, refetchProfile }) => {
     avatar,
     description,
     fullName,
+    githubUrl,
     id,
     username,
     viewerIsFollowing
@@ -85,9 +87,16 @@ const ProfileHeader = ({ history, profileData, refetchProfile }) => {
       </Box>
       <Box basis="1/2" flex={{ grow: 1, shrink: 0 }}>
         {fullName && <Heading level="2">{fullName}</Heading>}
-        <Text as="p" color="dark-3" margin={{ bottom: "medium" }}>
-          @{username} {account.isModerator && "(Moderator)"}
-        </Text>
+        <Box align="center" direction="row" margin={{ bottom: "medium" }}>
+          <Text as="p" color="dark-3">
+            @{username} {account.isModerator && "(Moderator)"}
+          </Text>
+          {githubUrl && (
+            <Anchor href={githubUrl} margin={{ left: "xsmall" }}>
+              <Github color="brand" size="20px" />
+            </Anchor>
+          )}
+        </Box>
         {account.isBlocked && (
           <NotAvailableMessage
             margin={{ bottom: "medium" }}

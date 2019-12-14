@@ -22,8 +22,14 @@ const resolvers = {
         following: profile.following
       });
     },
+    githubUrl(profile, args, { dataSources }, info) {
+      return dataSources.githubAPI.getGitHubURL();
+    },
     id(profile, args, context, info) {
       return profile._id;
+    },
+    pinnedItems(profile, args, { dataSources }, info) {
+      return dataSources.githubAPI.getPinnedItems();
     },
     viewerIsFollowing(profile, args, { dataSources, user }, info) {
       return dataSources.profilesAPI.checkViewerFollowsProfile(

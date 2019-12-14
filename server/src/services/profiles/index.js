@@ -8,6 +8,7 @@ import {
   onDeleteAccount
 } from "./queues";
 import auth0 from "../../config/auth0";
+import GitHubDataSource from "./datasources/GitHubDataSource";
 import initMongoose from "../../config/mongoose";
 import permissions from "./permissions";
 import Profile from "../../models/Profile";
@@ -40,6 +41,7 @@ import typeDefs from "./typeDefs";
     },
     dataSources: () => {
       return {
+        githubAPI: new GitHubDataSource({ auth0 }),
         profilesAPI: new ProfilesDataSource({ auth0, Profile })
       };
     }

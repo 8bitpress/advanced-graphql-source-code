@@ -96,6 +96,19 @@ const typeDefs = gql`
     startCursor: String
   }
 
+  type PinnableItem {
+    "The unique GitHub ID of the repository or gist."
+    id: ID!
+    "The name of the repository or gist."
+    name: String!
+    "The description of the repository or gist."
+    description: String
+    "The name of the primary language of a repository's code."
+    primaryLanguage: String
+    "The URL for the repository or gist."
+    url: String!
+  }
+
   """
   A profile contains metadata about a specific user.
   """
@@ -118,6 +131,10 @@ const typeDefs = gql`
     ): ProfileConnection
     "The full name of the user."
     fullName: String
+    "The URL of the user's GitHub page."
+    githubUrl: String
+    "The user's pinned GitHub repositories and gists."
+    pinnedItems: [PinnableItem]
     "The unique username of the user."
     username: String!
     "Whether the currently logged in user follows this profile."

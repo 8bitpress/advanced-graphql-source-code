@@ -78,6 +78,13 @@ export const GET_PROFILE_CONTENT = gql`
         }
         ...profilesNextPage
       }
+      pinnedItems {
+        id
+        description
+        name
+        primaryLanguage
+        url
+      }
       posts(first: 30, after: $postsCursor) @connection(key: "posts") {
         edges {
           node {

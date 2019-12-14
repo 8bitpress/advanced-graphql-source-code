@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs, Text } from "grommet";
-import { ChatOption, Group, Note } from "grommet-icons";
+import { ChatOption, Group, Note, Pin } from "grommet-icons";
 import { useQuery } from "@apollo/client";
 import React from "react";
 
@@ -8,6 +8,7 @@ import { updateSubfieldPageResults } from "../../lib/updateQueries";
 import ContentList from "../../components/ContentList/";
 import Loader from "../Loader";
 import LoadMoreButton from "../LoadMoreButton";
+import PinnedItemList from "../PinnedItemList";
 import ProfileList from "../ProfileList/";
 import RichTabTitle from "../RichTabTitle/";
 
@@ -24,8 +25,10 @@ const ProfileTabs = ({ username }) => {
     );
   }
 
+  console.log(data);
+
   const {
-    profile: { following, posts, replies }
+    profile: { following, pinnedItems, posts, replies }
   } = data;
 
   return (
@@ -129,9 +132,13 @@ const ProfileTabs = ({ username }) => {
           ) : (
             <Text as="p">No followed users to display yet!</Text>
           )}
-        </Box>{" "}
-        {/* UPDATED! */}
+        </Box>
       </Tab>
+      {pinnedItems && pinnedItems.length && (
+        <Tab title={<RichTabTitle icon={<Pin />} label="Code" size="xsmall" />}>
+          <PinnedItemList pinnedItemsData={pinnedItems} />
+        </Tab>
+      )}
     </Tabs>
   );
 };
