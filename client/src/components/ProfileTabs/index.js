@@ -5,12 +5,12 @@ import React from "react";
 
 import { GET_PROFILE_CONTENT } from "../../graphql/queries";
 import { updateSubfieldPageResults } from "../../lib/updateQueries";
-import ContentList from "../../components/ContentList/";
+import ContentList from "../../components/ContentList";
 import Loader from "../Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import PinnedItemList from "../PinnedItemList";
-import ProfileList from "../ProfileList/";
-import RichTabTitle from "../RichTabTitle/";
+import ProfileList from "../ProfileList";
+import RichTabTitle from "../RichTabTitle";
 
 const ProfileTabs = ({ username }) => {
   const { data, fetchMore, loading } = useQuery(GET_PROFILE_CONTENT, {
@@ -24,8 +24,6 @@ const ProfileTabs = ({ username }) => {
       </Box>
     );
   }
-
-  console.log(data);
 
   const {
     profile: { following, pinnedItems, posts, replies }
