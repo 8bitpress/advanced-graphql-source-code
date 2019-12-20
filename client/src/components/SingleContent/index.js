@@ -84,11 +84,13 @@ const SingleContent = ({ contentData }) => {
               {text}
             </Text>
             {media && (
-              <Image
-                margin={{ top: "small" }}
-                src={media}
-                alt="Content image"
-              />
+              <Box direction="row" justify="center">
+                <Image
+                  margin={{ top: "small" }}
+                  src={media}
+                  alt="Content image"
+                />
+              </Box>
             )}
           </>
         )}

@@ -97,11 +97,13 @@ const ContentListItem = ({ contentData, history }) => {
               {text}
             </Text>
             {media && (
-              <Image
-                src={media}
-                margin={{ top: "small" }}
-                alt="Content image"
-              />
+              <Box direction="row" justify="center">
+                <Image
+                  src={media}
+                  margin={{ top: "small" }}
+                  alt="Content image"
+                />
+              </Box>
             )}
           </>
         )}
