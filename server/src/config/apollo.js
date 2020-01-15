@@ -1,6 +1,7 @@
 import { ApolloServer } from "apollo-server-express";
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { RedisCache } from "apollo-server-cache-redis";
+import depthLimit from "graphql-depth-limit";
 
 import { readNestedFileStreams } from "../lib/handleUploads";
 
@@ -37,7 +38,8 @@ const server = new ApolloServer({
       post: process.env.REDIS_PORT,
       ttl: 600
     })
-  }
+  },
+  validationRules: [depthLimit(10)]
 });
 
 export default server;
