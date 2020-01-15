@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.0.0-beta.14",
     "apollo-link-error": "^1.1.12",
+    "apollo-link-persisted-queries": "^0.2.2",
     "apollo-upload-client": "^12.1.0",
     "auth0-js": "^9.11.3",
     "graphql": "^14.5.8",

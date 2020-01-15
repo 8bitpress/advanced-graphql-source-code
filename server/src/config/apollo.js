@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
+import { RedisCache } from "apollo-server-cache-redis";
 
 import { readNestedFileStreams } from "../lib/handleUploads";
 
@@ -29,6 +30,13 @@ const server = new ApolloServer({
   context: ({ req }) => {
     const user = req.user || null;
     return { user };
+  },
+  persistedQueries: {
+    cache: new RedisCache({
+      host: process.env.REDIS_HOST_ADDRESS,
+      post: process.env.REDIS_PORT,
+      ttl: 600
+    })
   }
 });
 

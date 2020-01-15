@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
+import { createPersistedQueryLink } from "apollo-link-persisted-queries";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
 
@@ -22,6 +23,7 @@ const client = new ApolloClient({
         console.log(`[Network error]: ${networkError}`);
       }
     }),
+    createPersistedQueryLink(),
     createUploadLink({
       credentials:
         process.env.NODE_ENV === "production" ? "same-origin" : "include",
