@@ -57,7 +57,7 @@ const resolvers = {
       return reply.blocked;
     },
     post(reply, args, { dataSources }, info) {
-      return dataSources.contentAPI.getPost(reply.postId);
+      return dataSources.contentAPI.getPostById(reply.postId);
     },
     postAuthor(reply, args, { dataSources }, info) {
       return { __typename: "Profile", id: reply.postAuthorProfileId };
@@ -66,13 +66,13 @@ const resolvers = {
 
   Query: {
     post(parent, { id }, { dataSources }, info) {
-      return dataSources.contentAPI.getPost(id);
+      return dataSources.contentAPI.getPostById(id);
     },
     posts(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getPosts(args);
     },
     reply(parent, { id }, { dataSources }, info) {
-      return dataSources.contentAPI.getReply(id);
+      return dataSources.contentAPI.getReplyById(id);
     },
     replies(parent, args, { dataSources }, info) {
       return dataSources.contentAPI.getReplies(args);

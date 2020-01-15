@@ -120,7 +120,7 @@ class ContentDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
-  async getPost(id) {
+  async getPostById(id) {
     return this.Post.findById(id);
   }
 
@@ -197,7 +197,7 @@ class ContentDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
-  getReply(id) {
+  getReplyById(id) {
     return this.Reply.findById(id).exec();
   }
 
