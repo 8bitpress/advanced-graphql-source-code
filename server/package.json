@@ -24,6 +24,7 @@
     "auth0": "^2.20.0",
     "cloudinary": "^1.18.1",
     "cors": "^2.8.5",
+    "dataloader": "^2.0.0",
     "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",

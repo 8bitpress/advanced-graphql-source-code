@@ -1,11 +1,20 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
+import DataLoader from "dataloader";
 
 import { uploadStream } from "../../../lib/handleUploads";
 import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 
 class ProfilesDataSource extends DataSource {
+  _profileByIdLoader = new DataLoader(async ids => {
+    const profiles = await this.Profile.find({ _id: { $in: ids } }).exec();
+
+    return ids.map(id =>
+      profiles.find(profile => profile._id.toString() === id)
+    );
+  });
+
   constructor({ auth0, Profile }) {
     super();
     this.auth0 = auth0;
@@ -91,7 +100,7 @@ class ProfilesDataSource extends DataSource {
   }
 
   getProfileById(id) {
-    return this.Profile.findById(id).exec();
+    return this._profileByIdLoader.load(id);
   }
 
   async getProfiles({ after, before, first, last, orderBy }) {

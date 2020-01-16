@@ -1,5 +1,6 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
+import DataLoader from "dataloader";
 
 import getToken from "../../../lib/getToken";
 
@@ -20,6 +21,13 @@ class AccountsDataSource extends DataSource {
     "promote:any_accounts",
     "block:any_content"
   ];
+
+  _accountByIdLoader = new DataLoader(async ids => {
+    const q = ids.map(id => `user_id:${id}`).join(" OR ");
+    const accounts = await this.auth0.getUsers({ search_engine: "v3", q });
+
+    return ids.map(id => accounts.find(account => account.user_id === id));
+  });
 
   constructor({ auth0 }) {
     super();
@@ -44,7 +52,7 @@ class AccountsDataSource extends DataSource {
   // READ
 
   getAccountById(id) {
-    return this.auth0.getUser({ id });
+    return this._accountByIdLoader.load(id);
   }
 
   getAccounts() {
