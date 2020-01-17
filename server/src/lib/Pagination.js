@@ -115,7 +115,9 @@ class Pagination {
     let filterWithCursor = { $and: [filter] };
     const fieldArr = Object.keys(sort);
     const field = fieldArr.length ? fieldArr[0] : "_id";
-    const fromDoc = await this.Model.findOne({ _id: fromCursorId }).exec();
+    const fromDoc = await this.Model.findOne({ _id: fromCursorId })
+      .select(field)
+      .exec();
 
     if (!fromDoc) {
       throw new Error(`No record found for ID '${fromCursorId}'`);
@@ -135,10 +137,12 @@ class Pagination {
     ];
 
     if (fromCursorId) {
-      const fromDoc = await this.Model.findOne(
-        { _id: fromCursorId, $text: { $search: filter.$text.$search } },
-        { score: { $meta: "textScore" } }
-      ).exec();
+      const fromDoc = await this.Model.findOne({
+        _id: fromCursorId,
+        $text: { $search: filter.$text.$search }
+      })
+        .select({ score: { $meta: "textScore" } })
+        .exec();
 
       if (!fromDoc) {
         throw new Error(`No record found for ID '${fromCursorId}'`);
@@ -203,7 +207,7 @@ class Pagination {
   async _getHasNextPage(endCursor, filter, sort) {
     const isSearch = this._isSearchQuery(sort); // NEW!
     const operator = this._getOperator(sort);
-    let count;
+    let nextPage;
 
     if (isSearch) {
       const pipeline = await this._getSearchPipeline(
@@ -214,9 +218,8 @@ class Pagination {
         sort
       );
 
-      pipeline.push({ $count: "count" });
       const result = await this.Model.aggregate(pipeline);
-      count = result.length ? result[0].count : 0;
+      nextPage = result.length;
     } else {
       const queryDoc = await this._getFilterWithCursor(
         endCursor,
@@ -225,20 +228,18 @@ class Pagination {
         sort
       );
 
-      count = await this.Model.find(queryDoc)
-        .select({ _id: 1 })
-        .sort(sort)
-        .limit(1)
-        .countDocuments();
+      nextPage = await this.Model.findOne(queryDoc)
+        .select("_id")
+        .sort(sort);
     }
 
-    return Boolean(count);
+    return Boolean(nextPage);
   }
 
   // Check if a previous page of results is available
   async _getHasPreviousPage(startCursor, filter, sort) {
-    const isSearch = this._isSearchQuery(sort); // NEw!
-    let count; // NEW!
+    const isSearch = this._isSearchQuery(sort);
+    let prevPage;
 
     if (isSearch) {
       const operator = this._getOperator(sort, {
@@ -253,9 +254,8 @@ class Pagination {
         sort
       );
 
-      pipeline.push({ $count: "count" });
       const result = await this.Model.aggregate(pipeline);
-      count = result.length ? result[0].count : 0;
+      prevPage = result.length;
     } else {
       const reverseSort = this._reverseSortDirection(sort);
       const operator = this._getOperator(reverseSort);
@@ -266,14 +266,12 @@ class Pagination {
         reverseSort
       );
 
-      count = await this.Model.find(queryDoc) // UPDATED!
-        .select({ _id: 1 })
-        .sort(reverseSort)
-        .limit(1)
-        .countDocuments();
+      prevPage = await this.Model.findOne(queryDoc)
+        .select("_id")
+        .sort(reverseSort);
     }
 
-    return Boolean(count);
+    return Boolean(prevPage);
   }
 
   // Get the ID of the first document in the paging window
