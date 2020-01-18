@@ -2,6 +2,7 @@ import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
 import { deleteUpload, uploadStream } from "../../../lib/handleUploads";
+import getProjectionFields from "../../../lib/getProjectionFields";
 import Pagination from "../../../lib/Pagination";
 
 class ContentDataSource extends DataSource {
@@ -15,7 +16,8 @@ class ContentDataSource extends DataSource {
   }
 
   // UTILITIES
-  getContentSort(sortEnum) {
+
+  _getContentSort(sortEnum) {
     let sort = {};
 
     if (sortEnum) {
@@ -29,7 +31,7 @@ class ContentDataSource extends DataSource {
     return sort;
   }
 
-  async uploadMedia(media, profileId) {
+  async _uploadMedia(media, profileId) {
     const buffer = Buffer.from(media.buffer.data);
     const uploadedMedia = await uploadStream(buffer, {
       folder: `${process.env.NODE_ENV}/${profileId}`,
@@ -43,6 +45,7 @@ class ContentDataSource extends DataSource {
   }
 
   // CREATE
+
   async createPost({ media, text, username }) {
     const profile = await this.Profile.findOne({ username }).exec();
 
@@ -55,7 +58,7 @@ class ContentDataSource extends DataSource {
     let uploadedMediaUrl;
 
     if (media) {
-      uploadedMediaUrl = await this.uploadMedia(media, profile._id);
+      uploadedMediaUrl = await this._uploadMedia(media, profile._id);
     }
 
     const newPost = new this.Post({
@@ -93,48 +96,54 @@ class ContentDataSource extends DataSource {
 
   // READ
 
-  async getOwnPosts({ after, before, first, last, orderBy, authorProfileId }) {
-    const sort = this.getContentSort(orderBy);
+  async getOwnPosts(
+    { after, before, first, last, orderBy, authorProfileId },
+    info
+  ) {
+    const sort = this._getContentSort(orderBy);
     const filter = { authorProfileId };
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.postPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Post.schema);
+    const edges = await this.postPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  async getOwnReplies({
-    after,
-    before,
-    first,
-    last,
-    orderBy,
-    authorProfileId
-  }) {
-    const sort = this.getContentSort(orderBy);
+  async getOwnReplies(
+    { after, before, first, last, orderBy, authorProfileId },
+    info
+  ) {
+    const sort = this._getContentSort(orderBy);
     const filter = { authorProfileId };
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.replyPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Reply.schema);
+    const edges = await this.replyPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  async getPostById(id) {
-    return this.Post.findById(id);
+  async getPostById(id, info) {
+    const projection = getProjectionFields(info, this.Post.schema);
+    return this.Post.findById(id).select(projection);
   }
 
-  async getPostReplies({ after, before, first, last, orderBy, postId }) {
-    const sort = this.getContentSort(orderBy);
+  async getPostReplies({ after, before, first, last, orderBy, postId }, info) {
+    const sort = this._getContentSort(orderBy);
     const filter = { postId };
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.replyPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Reply.schema);
+    const edges = await this.replyPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  async getPosts({ after, before, first, last, orderBy, filter: rawFilter }) {
+  async getPosts(
+    { after, before, first, last, orderBy, filter: rawFilter },
+    info
+  ) {
     let filter = {};
 
     if (rawFilter && rawFilter.followedBy) {
@@ -155,15 +164,19 @@ class ContentDataSource extends DataSource {
       filter.blocked = { $in: [null, false] };
     }
 
-    const sort = this.getContentSort(orderBy);
+    const sort = this._getContentSort(orderBy);
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.postPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Post.schema);
+    const edges = await this.postPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  async getReplies({ after, before, first, last, orderBy, filter: rawFilter }) {
+  async getReplies(
+    { after, before, first, last, orderBy, filter: rawFilter },
+    info
+  ) {
     const { to, from } = rawFilter;
 
     if (!to && !from) {
@@ -189,32 +202,36 @@ class ContentDataSource extends DataSource {
       filter.postAuthorProfileId = profile._id;
     }
 
-    const sort = this.getContentSort(orderBy);
+    const sort = this._getContentSort(orderBy);
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.replyPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Reply.schema);
+    const edges = await this.replyPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.replyPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  getReplyById(id) {
-    return this.Reply.findById(id).exec();
+  getReplyById(id, info) {
+    const projection = getProjectionFields(info, this.Reply.schema);
+    return this.Reply.findById(id).select(projection);
   }
 
-  async searchPosts({ after, first, searchString }) {
+  async searchPosts({ after, first, searchString }, info) {
     const sort = { score: { $meta: "textScore" }, _id: -1 };
     const filter = {
       $text: { $search: searchString },
       blocked: { $in: [null, false] }
     };
     const queryArgs = { after, first, filter, sort };
-    const edges = await this.postPagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Post.schema);
+    const edges = await this.postPagination.getEdges(queryArgs, projection);
     const pageInfo = await this.postPagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
   // UPDATE
+
   async togglePostBlock(id) {
     const post = await this.Post.findById(id).exec();
     const currentBlockedStatus =
@@ -224,7 +241,7 @@ class ContentDataSource extends DataSource {
       { _id: id },
       { blocked: !currentBlockedStatus },
       { new: true }
-    ).exec();
+    );
   }
 
   async toggleReplyBlock(id) {
@@ -236,10 +253,11 @@ class ContentDataSource extends DataSource {
       { _id: id },
       { blocked: !currentBlockedStatus },
       { new: true }
-    ).exec();
+    );
   }
 
   // DELETE
+
   async deletePost(id) {
     const deletedPost = await this.Post.findOneAndDelete({ _id: id }).exec();
     const { media } = deletedPost;

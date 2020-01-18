@@ -3,24 +3,25 @@ import { UserInputError } from "apollo-server";
 const resolvers = {
   Account: {
     profile(account, args, { dataSources }, info) {
-      return dataSources.profilesAPI.getProfile({
-        accountId: account.id
-      });
+      return dataSources.profilesAPI.getProfile(
+        { accountId: account.id },
+        info
+      );
     }
   },
 
   Profile: {
-    __resolveReference(reference, { dataSources }) {
-      return dataSources.profilesAPI.getProfileById(reference.id);
+    __resolveReference(reference, { dataSources }, info) {
+      return dataSources.profilesAPI.getProfileById(reference.id, info);
     },
     account(profile, args, context, info) {
       return { __typename: "Account", id: profile.accountId };
     },
     following(profile, args, { dataSources }, info) {
-      return dataSources.profilesAPI.getFollowedProfiles({
-        ...args,
-        following: profile.following
-      });
+      return dataSources.profilesAPI.getFollowedProfiles(
+        { ...args, following: profile.following },
+        info
+      );
     },
     githubUrl(profile, args, { dataSources }, info) {
       return dataSources.githubAPI.getGitHubURL();
@@ -41,7 +42,10 @@ const resolvers = {
 
   Query: {
     async profile(parent, { username }, { dataSources }, info) {
-      const profile = await dataSources.profilesAPI.getProfile({ username });
+      const profile = await dataSources.profilesAPI.getProfile(
+        { username },
+        info
+      );
 
       if (!profile) {
         throw new UserInputError("Profile does not exist.");
@@ -49,7 +53,7 @@ const resolvers = {
       return profile;
     },
     profiles(parent, args, { dataSources }, info) {
-      return dataSources.profilesAPI.getProfiles(args);
+      return dataSources.profilesAPI.getProfiles(args, info);
     },
     searchProfiles(
       parent,
@@ -57,11 +61,10 @@ const resolvers = {
       { dataSources },
       info
     ) {
-      return dataSources.profilesAPI.searchProfiles({
-        after,
-        first,
-        searchString: text
-      });
+      return dataSources.profilesAPI.searchProfiles(
+        { after, first, searchString: text },
+        info
+      );
     }
   },
 

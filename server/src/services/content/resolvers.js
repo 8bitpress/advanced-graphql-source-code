@@ -24,25 +24,25 @@ const resolvers = {
       return post.blocked;
     },
     replies(post, args, { dataSources }, info) {
-      return dataSources.contentAPI.getPostReplies({
-        ...args,
-        postId: post._id
-      });
+      return dataSources.contentAPI.getPostReplies(
+        { ...args, postId: post._id },
+        info
+      );
     }
   },
 
   Profile: {
     posts(profile, args, { dataSources }, info) {
-      return dataSources.contentAPI.getOwnPosts({
-        ...args,
-        authorProfileId: profile.id
-      });
+      return dataSources.contentAPI.getOwnPosts(
+        { ...args, authorProfileId: profile.id },
+        info
+      );
     },
     replies(profile, args, { dataSources }, info) {
-      return dataSources.contentAPI.getOwnReplies({
-        ...args,
-        authorProfileId: profile.id
-      });
+      return dataSources.contentAPI.getOwnReplies(
+        { ...args, authorProfileId: profile.id },
+        info
+      );
     }
   },
 
@@ -57,7 +57,7 @@ const resolvers = {
       return reply.blocked;
     },
     post(reply, args, { dataSources }, info) {
-      return dataSources.contentAPI.getPostById(reply.postId);
+      return dataSources.contentAPI.getPostById(reply.postId, info);
     },
     postAuthor(reply, args, { dataSources }, info) {
       return { __typename: "Profile", id: reply.postAuthorProfileId };
@@ -66,16 +66,16 @@ const resolvers = {
 
   Query: {
     post(parent, { id }, { dataSources }, info) {
-      return dataSources.contentAPI.getPostById(id);
+      return dataSources.contentAPI.getPostById(id, info);
     },
     posts(parent, args, { dataSources }, info) {
-      return dataSources.contentAPI.getPosts(args);
+      return dataSources.contentAPI.getPosts(args, info);
     },
     reply(parent, { id }, { dataSources }, info) {
-      return dataSources.contentAPI.getReplyById(id);
+      return dataSources.contentAPI.getReplyById(id, info);
     },
     replies(parent, args, { dataSources }, info) {
-      return dataSources.contentAPI.getReplies(args);
+      return dataSources.contentAPI.getReplies(args, info);
     },
     searchPosts(
       parent,
@@ -83,11 +83,10 @@ const resolvers = {
       { dataSources },
       info
     ) {
-      return dataSources.contentAPI.searchPosts({
-        after,
-        first,
-        searchString: text
-      });
+      return dataSources.contentAPI.searchPosts(
+        { after, first, searchString: text },
+        info
+      );
     }
   },
 

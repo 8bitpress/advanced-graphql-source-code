@@ -33,6 +33,7 @@
     "graphql": "^14.5.8",
     "graphql-depth-limit": "^1.1.0",
     "graphql-middleware": "^4.0.2",
+    "graphql-parse-resolve-info": "^4.5.0",
     "graphql-shield": "^7.0.2",
     "gravatar-url": "^3.1.0",
     "jwks-rsa": "^1.6.0",

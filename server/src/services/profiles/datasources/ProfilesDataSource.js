@@ -3,15 +3,19 @@ import { UserInputError } from "apollo-server";
 import DataLoader from "dataloader";
 
 import { uploadStream } from "../../../lib/handleUploads";
+import getProjectionFields from "../../../lib/getProjectionFields";
 import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 
 class ProfilesDataSource extends DataSource {
-  _profileByIdLoader = new DataLoader(async ids => {
-    const profiles = await this.Profile.find({ _id: { $in: ids } }).exec();
+  _profileByIdLoader = new DataLoader(async keys => {
+    const ids = [...new Set(keys.map(key => key.id))];
+    const profiles = await this.Profile.find({ _id: { $in: ids } })
+      .select(keys[0].projection)
+      .exec();
 
-    return ids.map(id =>
-      profiles.find(profile => profile._id.toString() === id)
+    return keys.map(key =>
+      profiles.find(profile => profile._id.toString() === key.id)
     );
   });
 
@@ -23,7 +27,8 @@ class ProfilesDataSource extends DataSource {
   }
 
   // UTILITIES
-  getProfileSort(sortEnum) {
+
+  _getProfileSort(sortEnum) {
     let sort = {};
 
     if (sortEnum) {
@@ -38,6 +43,7 @@ class ProfilesDataSource extends DataSource {
   }
 
   // CREATE
+
   async createProfile(profile) {
     const account = await this.auth0
       .getUser({ id: profile.accountId })
@@ -62,21 +68,20 @@ class ProfilesDataSource extends DataSource {
   }
 
   // READ
+
   async checkViewerFollowsProfile(viewerAccountId, profileId) {
     const viewerProfile = await this.Profile.findOne({
       accountId: viewerAccountId
-    }).exec();
+    })
+      .select("following")
+      .exec();
     return viewerProfile.following.includes(profileId);
   }
 
-  async getFollowedProfiles({
-    after,
-    before,
-    first,
-    last,
-    orderBy,
-    following
-  }) {
+  async getFollowedProfiles(
+    { after, before, first, last, orderBy, following },
+    info
+  ) {
     let sort = {};
 
     if (orderBy) {
@@ -89,46 +94,55 @@ class ProfilesDataSource extends DataSource {
 
     const filter = { _id: { $in: following } };
     const queryArgs = { after, before, first, last, filter, sort };
-    const edges = await this.pagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Profile.schema);
+    const edges = await this.pagination.getEdges(queryArgs, projection);
     const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  getProfile(filter) {
-    return this.Profile.findOne(filter).exec();
+  getProfile(filter, info) {
+    const projection = getProjectionFields(info, this.Profile.schema);
+    return this.Profile.findOne(filter).select(projection);
   }
 
-  getProfileById(id) {
-    return this._profileByIdLoader.load(id);
+  getProfileById(id, info) {
+    const projection = getProjectionFields(info, this.Profile.schema);
+    return this._profileByIdLoader.load(
+      { id, projection },
+      { cacheKeyFn: key => key.id }
+    );
   }
 
-  async getProfiles({ after, before, first, last, orderBy }) {
-    const sort = this.getProfileSort(orderBy);
+  async getProfiles({ after, before, first, last, orderBy }, info) {
+    const sort = this._getProfileSort(orderBy);
     const queryArgs = { after, before, first, last, sort };
-    const edges = await this.pagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Profile.schema);
+    const edges = await this.pagination.getEdges(queryArgs, projection);
     const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
-  async searchProfiles({ after, first, searchString }) {
+  async searchProfiles({ after, first, searchString }, info) {
     const sort = { score: { $meta: "textScore" }, _id: -1 };
     const filter = { $text: { $search: searchString } };
     const queryArgs = { after, first, filter, sort };
-    const edges = await this.pagination.getEdges(queryArgs);
+    const projection = getProjectionFields(info, this.Profile.schema);
+    const edges = await this.pagination.getEdges(queryArgs, projection);
     const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
 
     return { edges, pageInfo };
   }
 
   // UPDATE
+
   followProfile(username, profileIdToFollow) {
     return this.Profile.findOneAndUpdate(
       { username },
       { $addToSet: { following: profileIdToFollow } },
       { new: true }
-    ).exec();
+    );
   }
 
   unfollowProfile(username, profileIdToUnfollow) {
@@ -136,7 +150,7 @@ class ProfilesDataSource extends DataSource {
       { username },
       { $pull: { following: profileIdToUnfollow } },
       { new: true }
-    ).exec();
+    );
   }
 
   async updateProfile(
@@ -183,10 +197,11 @@ class ProfilesDataSource extends DataSource {
 
     return this.Profile.findOneAndUpdate({ username: currentUsername }, data, {
       new: true
-    }).exec();
+    });
   }
 
   // DELETE
+
   async deleteProfile(username) {
     const deletedProfile = await this.Profile.findOneAndDelete({
       username
