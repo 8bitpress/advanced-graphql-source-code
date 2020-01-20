@@ -4,13 +4,30 @@ import { RedisCache } from "apollo-server-cache-redis";
 import depthLimit from "graphql-depth-limit";
 
 import { readNestedFileStreams } from "../lib/handleUploads";
+import accountsTypeDefs from "../services/accounts/typeDefs";
+import profilesTypeDefs from "../services/profiles/typeDefs";
+import contentTypeDefs from "../services/content/typeDefs";
+
+const serviceDefinitions = [
+  {
+    name: "accounts",
+    url: process.env.ACCOUNTS_SERVICE_URL,
+    typeDefs: accountsTypeDefs
+  },
+  {
+    name: "profiles",
+    url: process.env.PROFILES_SERVICE_URL,
+    typeDefs: profilesTypeDefs
+  },
+  {
+    name: "content",
+    url: process.env.CONTENT_SERVICE_URL,
+    typeDefs: contentTypeDefs
+  }
+];
 
 const gateway = new ApolloGateway({
-  serviceList: [
-    { name: "accounts", url: process.env.ACCOUNTS_SERVICE_URL },
-    { name: "profiles", url: process.env.PROFILES_SERVICE_URL },
-    { name: "content", url: process.env.CONTENT_SERVICE_URL }
-  ],
+  serviceList: serviceDefinitions,
   buildService({ name, url }) {
     return new RemoteGraphQLDataSource({
       url,
@@ -22,7 +39,12 @@ const gateway = new ApolloGateway({
         );
       }
     });
-  }
+  },
+  ...(process.env.NODE_ENV === "development" && {
+    experimental_updateServiceDefinitions(_config) {
+      return { serviceDefinitions, isNewSchema: true };
+    }
+  })
 });
 
 const server = new ApolloServer({
