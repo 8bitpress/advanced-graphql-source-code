@@ -1,10 +1,13 @@
-import server from "./config/apollo";
 import app from "./config/app";
+import initGateway from "./config/apollo";
 
-const port = process.env.PORT;
+(async () => {
+  const port = process.env.PORT;
+  const server = await initGateway();
 
-server.applyMiddleware({ app, cors: false });
+  server.applyMiddleware({ app, cors: false });
 
-app.listen({ port }, () =>
-  console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)
-);
+  app.listen({ port }, () =>
+    console.log(`Server ready at http://localhost:${port}${server.graphqlPath}`)
+  );
+})();

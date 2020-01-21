@@ -25,6 +25,12 @@ cilent/build
 server/src/scripts/authenticateUser.js
 server/src/scripts/seedData.js
 
+# logs
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # misc
 
 .DS_Store
@@ -35,7 +41,3 @@ server/src/scripts/seedData.js
 ehthumbs.db
 *[Tt]humbs.db
 *.Trashes
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
