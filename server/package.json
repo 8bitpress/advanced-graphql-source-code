@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pm2-dev start process.yml --watch"
+    "dev": "npx pm2 start process.yml --watch"
   },
   "keywords": [],
   "author": "",
@@ -41,7 +41,6 @@
     "wait-on": "^4.0.0"
   },
   "devDependencies": {
-    "faker": "^4.1.0",
-    "pm2": "^4.2.2"
+    "faker": "^4.1.0"
   }
 }
