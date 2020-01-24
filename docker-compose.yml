@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:4.2.2
+    container_name: mongo
+    restart: always
+    volumes:
+      - ./data/db:/data/db
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+  redis:
+    image: redis:5.0.7-alpine
+    container_name: redis
+    restart: always
+  graphql:
+    container_name: graphql
+    restart: always
+    build:
+      context: ./server
+    expose:
+      - 4001
+      - 4002
+      - 4003
+    ports:
+      - 4000:4000
+    volumes:
+      - ./server:/home/node/app
+      - /home/node/app/node_modules
+    depends_on:
+      - mongo
+      - redis
+    env_file:
+      - ./server/.env
+    environment:
+      - ACCOUNTS_SERVICE_PORT=4001
+      - ACCOUNTS_SERVICE_URL=http://localhost:4001
+      - CONTENT_SERVICE_PORT=4003
+      - CONTENT_SERVICE_URL=http://localhost:4003
+      - PORT=4000
+      - PROFILES_SERVICE_PORT=4002
+      - PROFILES_SERVICE_URL=http://localhost:4002
+      - REDIS_HOST_ADDRESS=redis
+      - REDIS_PORT=6379
+  web:
+    container_name: web
+    restart: always
+    build:
+      context: ./client
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - ./client/.env

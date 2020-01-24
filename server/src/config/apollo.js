@@ -37,7 +37,7 @@ export default async function() {
   };
 
   await waitOn(options).catch(error => {
-    console.log("Error waiting for service ports:", error);
+    console.log("Error waiting for services:", error);
   });
 
   const gateway = new ApolloGateway({

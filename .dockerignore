@@ -1,0 +1,27 @@
+# editor
+
+.vscode
+
+# docker
+
+.dockerignore
+docker-compose*
+**/Dockerfile*
+
+# logs
+
+**/npm-debug.log*
+
+## packages
+
+**/node_modules/
+
+# git
+
+.git
+.gitingore
+
+# misc
+
+LICENSE
+README.md
