@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pm2-dev process.yml"
+    "dev": "pm2-dev start process.yml --watch"
   },
   "keywords": [],
   "author": "",
