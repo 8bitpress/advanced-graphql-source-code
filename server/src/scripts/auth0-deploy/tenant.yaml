@@ -1,0 +1,249 @@
+rules:
+  - name: Add authorization details to token
+    script: ./rules/Add authorization details to token.js
+    stage: login_success
+    enabled: true
+    order: 1
+rulesConfigs: []
+pages: []
+resourceServers:
+  - name: DevChirps GraphQL API
+    identifier: "https://devchirps.mandiwise.com/graphql"
+    allow_offline_access: false
+    enforce_policies: false
+    signing_alg: RS256
+    skip_consent_for_verifiable_first_party_clients: true
+    token_dialect: access_token
+    token_lifetime: 86400
+    token_lifetime_for_web: 7200
+clients:
+  - name: Default App
+    callbacks: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    oidc_conformant: true
+    sso_disabled: false
+  - name: DevChirps
+    allowed_clients: []
+    allowed_logout_urls:
+      - "https://devchirps.mandiwise.com"
+    allowed_origins:
+      - "https://devchirps.mandiwise.com"
+    app_type: spa
+    callbacks:
+      - "https://devchirps.mandiwise.com/login"
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    native_social_login:
+      apple:
+        enabled: false
+    oidc_conformant: true
+    sso_disabled: false
+    token_endpoint_auth_method: none
+    web_origins:
+      - "https://devchirps.mandiwise.com"
+  - name: DevChirps GraphQL API
+    allowed_clients: []
+    app_type: spa
+    callbacks: []
+    client_aliases: []
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+      - password
+      - "http://auth0.com/oauth/grant-type/password-realm"
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    native_social_login:
+      apple:
+        enabled: false
+    oidc_conformant: true
+    sso_disabled: false
+    token_endpoint_auth_method: none
+  - name: DevChirps GraphQL API (Test Application)
+    app_type: non_interactive
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    oidc_conformant: true
+    sso_disabled: false
+  - name: DevChirps Management API
+    app_type: non_interactive
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    oidc_conformant: true
+    sso_disabled: false
+  - name: auth0-deploy-cli-extension
+    cross_origin_auth: false
+    custom_login_page_on: true
+    grant_types:
+      - authorization_code
+      - implicit
+      - refresh_token
+      - client_credentials
+    is_first_party: true
+    is_token_endpoint_ip_header_trusted: false
+    jwt_configuration:
+      alg: RS256
+      lifetime_in_seconds: 36000
+      secret_encoded: false
+    oidc_conformant: true
+    sso_disabled: false
+databases:
+  - name: Username-Password-Authentication
+    strategy: auth0
+    enabled_clients:
+      - DevChirps
+      - DevChirps Management API
+      - DevChirps GraphQL API (Test Application)
+      - auth0-deploy-cli-extension
+      - Default App
+      - DevChirps GraphQL API
+    is_domain_connection: false
+    options:
+      mfa:
+        active: true
+        return_enroll_settings: true
+      passwordPolicy: good
+      strategy_version: 2
+      brute_force_protection: true
+    realms:
+      - Username-Password-Authentication
+connections:
+  - name: github
+    strategy: github
+    enabled_clients:
+      - DevChirps
+      - auth0-deploy-cli-extension
+    is_domain_connection: false
+    options:
+      client_id: @@GH_CLIENT_ID@@
+      client_secret: @@GH_CLIENT_SECRET@@
+      read_user: true
+      profile: true
+      email: false
+      follow: false
+      public_repo: false
+      repo: false
+      repo_deployment: false
+      repo_status: false
+      delete_repo: false
+      notifications: false
+      gist: false
+      read_repo_hook: false
+      write_repo_hook: false
+      admin_repo_hook: false
+      read_org: false
+      write_org: false
+      admin_org: false
+      read_public_key: false
+      write_public_key: false
+      admin_public_key: false
+      scope:
+        - "read:user"
+  - name: google-oauth2
+    strategy: google-oauth2
+    enabled_clients: []
+    is_domain_connection: false
+    options:
+      email: true
+      profile: true
+      scope:
+        - email
+        - profile
+tenant:
+  enabled_locales:
+    - en
+  flags:
+    new_universal_login_experience_enabled: false
+    universal_login: false
+    disable_clickjack_protection_headers: false
+  picture_url: "https://i.imgur.com/gsLdLSC.png"
+  universal_login:
+    colors:
+      page_background: "#000000"
+      primary: "#7d4cdb"
+emailProvider: {}
+emailTemplates: []
+clientGrants:
+  - client_id: DevChirps GraphQL API (Test Application)
+    audience: "https://devchirps.mandiwise.com/graphql"
+    scope: []
+  - client_id: DevChirps Management API
+    audience: "https://devchirps.auth0.com/api/v2/"
+    scope:
+      - "read:users"
+      - "update:users"
+      - "delete:users"
+      - "create:users"
+      - "read:users_app_metadata"
+      - "update:users_app_metadata"
+      - "delete:users_app_metadata"
+      - "create:users_app_metadata"
+      - "read:user_idp_tokens"
+guardianFactors:
+  - name: duo
+    enabled: false
+  - name: email
+    enabled: false
+  - name: otp
+    enabled: false
+  - name: push-notification
+    enabled: false
+  - name: sms
+    enabled: false
+guardianFactorProviders: []
+guardianFactorTemplates: []
+roles: []
+branding: {}
+prompts: {}
