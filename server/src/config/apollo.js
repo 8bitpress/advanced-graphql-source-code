@@ -70,6 +70,9 @@ export default async function() {
     },
     persistedQueries: {
       cache: new RedisCache({
+        ...(process.env.NODE_ENV === "production" && {
+          password: process.env.REDIS_PASSWORD
+        }),
         host: process.env.REDIS_HOST_ADDRESS,
         post: process.env.REDIS_PORT,
         ttl: 600

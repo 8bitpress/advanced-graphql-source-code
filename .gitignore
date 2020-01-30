@@ -19,6 +19,11 @@ node_modules
 
 data
 
+# config
+
+certbot
+nginx/default.conf
+
 # client
 
 client/coverage

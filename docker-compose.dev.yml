@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 
 services:
   mongo:
@@ -8,8 +8,12 @@ services:
     ports:
       - 6379:6379
   graphql:
+    build:
+      target: base
     command: pm2-dev process.yml
   web:
+    build:
+      target: base
     ports:
       - 3000:3000
     command: npm run start

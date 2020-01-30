@@ -4,6 +4,11 @@ export default function initMongoose() {
   const connectionUrl = process.env.MONGODB_URL;
 
   mongoose.connect(connectionUrl, {
+    ...(process.env.NODE_ENV === "production" && {
+      authSource: "admin",
+      pass: process.env.MONGO_INITDB_ROOT_PASSWORD,
+      user: process.env.MONGO_INITDB_ROOT_USERNAME
+    }),
     useNewUrlParser: true,
     useFindAndModify: false,
     useCreateIndex: true,
