@@ -53,10 +53,7 @@ class Auth0 {
 
   setSession(authResult) {
     const cookieOptions = {
-      ...(process.env.REACT_APP_ENV === "production" && {
-        httpOnly: true,
-        secure: true
-      }),
+      secure: process.env.REACT_APP_ENV === "production",
       sameSite: "Strict"
     };
     Cookies.set("access_token", authResult.accessToken, cookieOptions);
