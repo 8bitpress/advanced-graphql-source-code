@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Usage (from root directory):
-# $ chmod +x scripts/init-letsencrypt.sh
-# $ ./scripts/init-letsencrypt.sh mydomain.com bob@email.com 1
+# Usage:
+# $ chmod +x init-letsencrypt.sh
+# $ init-letsencrypt.sh mydomain.com bob@email.com 1
 #
 # Reference: 
 # https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
