@@ -26,7 +26,7 @@ const client = new ApolloClient({
     createPersistedQueryLink(),
     createUploadLink({
       credentials:
-        process.env.NODE_ENV === "production" ? "same-origin" : "include",
+        process.env.REACT_APP_ENV === "production" ? "same-origin" : "include",
       uri: process.env.REACT_APP_GRAPHQL_ENDPOINT
     })
   ])
