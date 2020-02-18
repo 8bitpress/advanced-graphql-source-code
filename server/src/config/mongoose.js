@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export default function initMongoose() {
+export default function() {
   const connectionUrl = process.env.MONGODB_URL;
 
   mongoose.connect(connectionUrl, {
