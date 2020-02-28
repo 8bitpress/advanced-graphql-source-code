@@ -1,6 +1,5 @@
 # editor
 
-.vs
 .vscode
 
 # dependencies
@@ -28,11 +27,6 @@ nginx/default.conf
 
 client/coverage
 cilent/build
-
-# server
-
-server/src/scripts/authenticateUser.js
-server/src/scripts/seedData.js
 
 # logs
 
