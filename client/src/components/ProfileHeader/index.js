@@ -1,7 +1,7 @@
 import { Anchor, Box, Button, Heading, Image, Text } from "grommet";
 import { Github } from "grommet-icons";
+import { useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { withRouter } from "react-router-dom";
 import moment from "moment";
 import React from "react";
 
@@ -11,7 +11,7 @@ import AccountBlockButton from "../AccountBlockButton";
 import ModeratorRoleButton from "../ModeratorRoleButton";
 import NotAvailableMessage from "../NotAvailableMessage";
 
-const ProfileHeader = ({ history, profileData, refetchProfile }) => {
+const ProfileHeader = ({ profileData, refetchProfile }) => {
   const {
     account,
     avatar,
@@ -28,6 +28,7 @@ const ProfileHeader = ({ history, profileData, refetchProfile }) => {
       data: { viewer }
     }
   } = useAuth();
+  const history = useHistory();
   const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE);
   const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE);
 
@@ -132,4 +133,4 @@ const ProfileHeader = ({ history, profileData, refetchProfile }) => {
   );
 };
 
-export default withRouter(ProfileHeader);
+export default ProfileHeader;

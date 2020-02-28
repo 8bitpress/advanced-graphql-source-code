@@ -1,14 +1,17 @@
 import { Box, Button, Form, FormField, Select } from "grommet";
 import { Search } from "grommet-icons";
-import { withRouter } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import queryString from "query-string";
 import React from "react";
 
-const SearchForm = ({ history, location }) => {
+const SearchForm = () => {
   const options = [
     { label: "For Posts", value: "searchPosts" },
     { label: "For Profiles", value: "searchProfiles" }
   ];
+
+  const history = useHistory();
+  const location = useLocation();
   const qsValues = queryString.parse(location.search);
 
   return (
@@ -65,4 +68,4 @@ const SearchForm = ({ history, location }) => {
   );
 };
 
-export default withRouter(SearchForm);
+export default SearchForm;

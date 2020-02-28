@@ -3,17 +3,18 @@ import {
   Button,
   Form,
   FormField,
-  Image, // UPDATED!
-  Stack, // UPDATED!
+  Image,
+  Stack,
   TextArea,
-  TextInput // UPDATED!
+  TextInput
 } from "grommet";
 import { Close } from "grommet-icons";
+import { useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { withRouter } from "react-router-dom";
 import React, { useRef, useState } from "react";
 
 import { CREATE_POST, CREATE_REPLY } from "../../graphql/mutations";
+
 import {
   GET_POST,
   GET_POSTS,
@@ -24,10 +25,11 @@ import CharacterCountLabel from "../CharacterCountLabel";
 import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
-const CreateContentForm = ({ history, parentPostId }) => {
+const CreateContentForm = ({ parentPostId }) => {
   const validFormats = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
 
   const mediaInput = useRef();
+  const history = useHistory();
   const [mediaFile, setMediaFile] = useState();
   const [contentCharCount, setContentCharCount] = useState(0);
   const {
@@ -190,4 +192,4 @@ const CreateContentForm = ({ history, parentPostId }) => {
   );
 };
 
-export default withRouter(CreateContentForm);
+export default CreateContentForm;

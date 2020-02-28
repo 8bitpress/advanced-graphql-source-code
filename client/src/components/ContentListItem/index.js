@@ -1,5 +1,5 @@
 import { Anchor, Box, Image, Text } from "grommet";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React from "react";
 
 import { displayRelativeDateOrTime } from "../../lib/displayDatetime";
@@ -9,12 +9,13 @@ import HoverBox from "../HoverBox";
 import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
-const ContentListItem = ({ contentData, history }) => {
+const ContentListItem = ({ contentData }) => {
   const {
     viewerQuery: {
       data: { viewer }
     }
   } = useAuth();
+  const history = useHistory();
 
   const {
     author,
@@ -132,4 +133,4 @@ const ContentListItem = ({ contentData, history }) => {
   );
 };
 
-export default withRouter(ContentListItem);
+export default ContentListItem;

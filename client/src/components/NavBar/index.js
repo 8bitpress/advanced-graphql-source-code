@@ -1,13 +1,15 @@
 import { Anchor, Box, Button, Heading, Menu } from "grommet";
 import { Menu as MenuIcon } from "grommet-icons";
-import { withRouter } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
 import CreateContentForm from "../CreateContentForm";
 import Modal from "../Modal";
 
-const NavBar = ({ history, location }) => {
+const NavBar = () => {
+  const history = useHistory();
+  const location = useLocation();
   const { logout, viewerQuery } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -72,4 +74,4 @@ const NavBar = ({ history, location }) => {
   );
 };
 
-export default withRouter(NavBar);
+export default NavBar;

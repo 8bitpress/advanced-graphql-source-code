@@ -40,7 +40,7 @@ const isEditingOwnPost = rule()(
     const profile = await dataSources.contentAPI.Profile.findOne({
       accountId: user.sub
     }).exec();
-    const post = await dataSources.contentAPI.getPostById(id);
+    const post = await dataSources.contentAPI.Post.findById(id);
 
     if (!profile || !post) {
       return false;
@@ -59,7 +59,7 @@ const isEditingOwnReply = rule()(
     const profile = await dataSources.contentAPI.Profile.findOne({
       accountId: user.sub
     }).exec();
-    const reply = await dataSources.contentAPI.getReplyById(id);
+    const reply = await dataSources.contentAPI.Reply.findById(id);
 
     if (!profile || !reply) {
       return false;

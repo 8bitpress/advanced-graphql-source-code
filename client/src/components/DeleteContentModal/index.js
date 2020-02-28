@@ -1,10 +1,11 @@
 import { Button, Box, Text } from "grommet";
 import { Trash } from "grommet-icons";
+import { useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { withRouter } from "react-router-dom";
 import React, { useState } from "react";
 
 import { DELETE_POST, DELETE_REPLY } from "../../graphql/mutations";
+
 import {
   GET_POST,
   GET_POSTS,
@@ -13,13 +14,8 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import Modal from "../Modal";
 
-const DeleteContentModal = ({
-  history,
-  iconSize,
-  id,
-  isReply,
-  parentPostId
-}) => {
+const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
+  const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
   const {
     viewerQuery: {
@@ -106,4 +102,4 @@ DeleteContentModal.defaultProps = {
   parentPostId: null
 };
 
-export default withRouter(DeleteContentModal);
+export default DeleteContentModal;

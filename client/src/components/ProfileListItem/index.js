@@ -1,8 +1,8 @@
 import { Anchor, Box, Button, Image, Text } from "grommet";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useLocation, useParams, useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import React from "react";
 import queryString from "query-string";
+import React from "react";
 
 import { FOLLOW_PROFILE, UNFOLLOW_PROFILE } from "../../graphql/mutations";
 import {
@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import HoverBox from "../HoverBox";
 
-const ProfileListItem = ({ history, location, match, profileData }) => {
+const ProfileListItem = ({ profileData }) => {
   const {
     avatar,
     description,
@@ -22,6 +22,9 @@ const ProfileListItem = ({ history, location, match, profileData }) => {
     viewerIsFollowing
   } = profileData;
 
+  const history = useHistory();
+  const location = useLocation();
+  const params = useParams();
   const {
     viewerQuery: {
       data: { viewer }
@@ -29,8 +32,8 @@ const ProfileListItem = ({ history, location, match, profileData }) => {
   } = useAuth();
 
   const update = cache => {
-    if (match.params.username) {
-      updateProfileContentFollowing(cache, id, match.params.username);
+    if (params.username) {
+      updateProfileContentFollowing(cache, id, params.username);
     } else if (location.pathname === "/search/") {
       const { text } = queryString.parse(location.search);
       updateSearchProfilesFollowing(cache, id, text);
@@ -104,4 +107,4 @@ const ProfileListItem = ({ history, location, match, profileData }) => {
   );
 };
 
-export default withRouter(ProfileListItem);
+export default ProfileListItem;
