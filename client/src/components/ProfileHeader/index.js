@@ -23,11 +23,11 @@ const ProfileHeader = ({ profileData, refetchProfile }) => {
     viewerIsFollowing
   } = profileData;
 
+  const value = useAuth();
   const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+    isModerator: viewerIsModerator,
+    profile: { username: viewerUsername }
+  } = value.viewerQuery.data.viewer;
   const history = useHistory();
   const [followProfile, { loading }] = useMutation(FOLLOW_PROFILE);
   const [unfollowProfile] = useMutation(UNFOLLOW_PROFILE);
@@ -37,14 +37,14 @@ const ProfileHeader = ({ profileData, refetchProfile }) => {
       followingProfileId: id
     },
     where: {
-      username: viewer.profile.username
+      username: viewerUsername
     }
   };
 
   const renderButton = () => {
     let label, onClick;
 
-    if (username === viewer.profile.username) {
+    if (username === viewerUsername) {
       label = "Edit Profile";
       onClick = () => {
         history.push("/settings/profile");
@@ -112,14 +112,14 @@ const ProfileHeader = ({ profileData, refetchProfile }) => {
           <Text as="p" margin={{ right: "xsmall" }}>
             Joined {moment(account.createdAt).format("MMMM YYYY")}
           </Text>
-          {viewer.isModerator && username !== viewer.profile.username && (
+          {viewerIsModerator && username !== viewerUsername && (
             <AccountBlockButton
               accountId={account.id}
               iconSize="18px"
               isBlocked={account.isBlocked}
             />
           )}
-          {viewer.isModerator && (
+          {viewerIsModerator && (
             <ModeratorRoleButton
               accountId={account.id}
               iconSize="18px"

@@ -21,16 +21,13 @@ schema
   .has().symbols(); // prettier-ignore
 
 const Account = () => {
-  const {
-    logout,
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+  const { logout, viewerQuery } = useAuth();
+  const { email: viewerEmail, id: viewerId } = viewerQuery.data.viewer;
 
-  const [email, setEmail] = useState(viewer.email);
+  const [email, setEmail] = useState(viewerEmail);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
   const [updateAccountEmail, { loading }] = useMutation(UPDATE_ACCOUNT, {
     onCompleted: logout
   });
@@ -69,7 +66,7 @@ const Account = () => {
             updateAccountEmail({
               variables: {
                 data: { email },
-                where: { id: viewer.id }
+                where: { id: viewerId }
               }
             });
           }}
@@ -94,7 +91,7 @@ const Account = () => {
           <Box align="center" direction="row" justify="end">
             {loading && <Loader size="medium" />}
             <AccentButton
-              disabled={loading || viewer.email === email}
+              disabled={loading || viewerEmail === email}
               label="Save"
               margin={{ left: "xsmall" }}
               type="submit"
@@ -115,7 +112,7 @@ const Account = () => {
             updateAccountPassword({
               variables: {
                 data: { password, newPassword },
-                where: { id: viewer.id }
+                where: { id: viewerId }
               }
             });
           }}
@@ -170,7 +167,7 @@ const Account = () => {
           Danger zone! Click this button to permanently delete your account and
           all of its data:
         </Text>
-        <DeleteAccountModal accountId={viewer.id} />
+        <DeleteAccountModal accountId={viewerId} />
       </Box>
     </MainLayout>
   );

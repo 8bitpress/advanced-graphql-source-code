@@ -26,17 +26,15 @@ import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
 const CreateContentForm = ({ parentPostId }) => {
-  const validFormats = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
+  const history = useHistory();
+  const [contentCharCount, setContentCharCount] = useState(0);
+  const value = useAuth();
+  const { username } = value.viewerQuery.data.viewer.profile;
 
   const mediaInput = useRef();
-  const history = useHistory();
   const [mediaFile, setMediaFile] = useState();
-  const [contentCharCount, setContentCharCount] = useState(0);
-  const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+  const validFormats = ["image/gif", "image/jpeg", "image/jpg", "image/png"];
+
   const [createPost, { loading }] = useMutation(CREATE_POST, {
     onCompleted: ({ createPost: { id } }) => {
       history.push(`/post/${id}`);
@@ -46,14 +44,14 @@ const CreateContentForm = ({ parentPostId }) => {
         query: GET_POSTS,
         variables: {
           filter: {
-            followedBy: viewer.profile.username,
+            followedBy: username,
             includeBlocked: false
           }
         }
       },
       {
         query: GET_PROFILE_CONTENT,
-        variables: { username: viewer.profile.username }
+        variables: { username }
       }
     ]
   });
@@ -65,7 +63,7 @@ const CreateContentForm = ({ parentPostId }) => {
       { query: GET_POST, variables: { id: parentPostId } },
       {
         query: GET_PROFILE_CONTENT,
-        variables: { username: viewer.profile.username }
+        variables: { username }
       }
     ]
   });
@@ -86,7 +84,7 @@ const CreateContentForm = ({ parentPostId }) => {
                   ...(file && { media: file }),
                   postId: parentPostId,
                   text: event.value.text,
-                  username: viewer.profile.username
+                  username
                 }
               }
             });
@@ -96,7 +94,7 @@ const CreateContentForm = ({ parentPostId }) => {
                 data: {
                   ...(file && { media: file }),
                   text: event.value.text,
-                  username: viewer.profile.username
+                  username
                 }
               }
             });

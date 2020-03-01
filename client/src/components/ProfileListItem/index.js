@@ -25,11 +25,8 @@ const ProfileListItem = ({ profileData }) => {
   const history = useHistory();
   const location = useLocation();
   const params = useParams();
-  const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+  const value = useAuth();
+  const { username: viewerUsername } = value.viewerQuery.data.viewer.profile;
 
   const update = cache => {
     if (params.username) {
@@ -47,7 +44,7 @@ const ProfileListItem = ({ profileData }) => {
       followingProfileId: id
     },
     where: {
-      username: viewer.profile.username
+      username: viewerUsername
     }
   };
 
@@ -87,7 +84,7 @@ const ProfileListItem = ({ profileData }) => {
           {description}
         </Text>
       </Box>
-      {viewer.profile.username !== username && (
+      {viewerUsername !== username && (
         <Box onClick={event => event.stopPropagation()}>
           <Button
             disabled={loading}

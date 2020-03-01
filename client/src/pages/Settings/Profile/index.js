@@ -9,14 +9,8 @@ import Modal from "../../../components/Modal";
 
 const Profile = ({ history }) => {
   const [modalOpen, setModalOpen] = useState(true);
-  const {
-    viewerQuery: {
-      data: {
-        viewer: { id, profile }
-      }
-    },
-    updateViewer
-  } = useAuth();
+  const { viewerQuery, updateViewer } = useAuth();
+  const { id, profile } = viewerQuery.data.viewer;
   const profileRef = useRef(profile);
 
   if (!profileRef.current && profile) {

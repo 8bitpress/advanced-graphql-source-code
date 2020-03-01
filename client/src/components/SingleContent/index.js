@@ -10,11 +10,11 @@ import NewReplyModal from "../NewReplyModal";
 import NotAvailableMessage from "../NotAvailableMessage";
 
 const SingleContent = ({ contentData }) => {
+  const value = useAuth();
   const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+    isModerator,
+    profile: { username }
+  } = value.viewerQuery.data.viewer;
 
   const {
     author,
@@ -78,7 +78,7 @@ const SingleContent = ({ contentData }) => {
             text="This content was blocked by a moderator."
           />
         )}
-        {(!isBlocked || author.username === viewer.profile.username) && (
+        {(!isBlocked || author.username === username) && (
           <>
             <Text as="p" size="xlarge">
               {text}
@@ -99,7 +99,7 @@ const SingleContent = ({ contentData }) => {
         <Text as="p" color="dark-3" size="small" margin={{ right: "small" }}>
           {displayFullDatetime(createdAt)}
         </Text>
-        {author.username === viewer.profile.username && (
+        {author.username === username && (
           <DeleteContentModal
             iconSize="18px"
             id={id}
@@ -107,7 +107,7 @@ const SingleContent = ({ contentData }) => {
             parentPostId={parentPost && parentPost.id}
           />
         )}
-        {viewer.isModerator && viewer.profile.username !== author.username && (
+        {isModerator && username !== author.username && (
           <ContentBlockButton
             iconSize="18px"
             id={id}

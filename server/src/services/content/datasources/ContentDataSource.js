@@ -259,7 +259,7 @@ class ContentDataSource extends DataSource {
   // DELETE
 
   async deletePost(id) {
-    const deletedPost = await this.Post.findOneAndDelete({ _id: id }).exec();
+    const deletedPost = await this.Post.findByIdAndDelete(id).exec();
     const { media } = deletedPost;
 
     if (media) {
@@ -271,7 +271,7 @@ class ContentDataSource extends DataSource {
 
   async deleteReply(id) {
     const deletedReply = await this.Reply.findByIdAndDelete(id).exec();
-    const { media } = deletedPost;
+    const { media } = deletedReply;
 
     if (media) {
       await deleteUpload(media);

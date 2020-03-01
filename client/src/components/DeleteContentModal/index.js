@@ -17,11 +17,8 @@ import Modal from "../Modal";
 const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
-  const {
-    viewerQuery: {
-      data: { viewer }
-    }
-  } = useAuth();
+  const value = useAuth();
+  const { username } = value.viewerQuery.data.viewer.profile;
 
   const onCompleted = () => {
     setModalOpen(false);
@@ -34,14 +31,14 @@ const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
         query: GET_POSTS,
         variables: {
           filter: {
-            followedBy: viewer.profile.username,
+            followedBy: username,
             includeBlocked: false
           }
         }
       },
       {
         query: GET_PROFILE_CONTENT,
-        variables: { username: viewer.profile.username }
+        variables: { username }
       }
     ]
   });
@@ -53,7 +50,7 @@ const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
         : []),
       {
         query: GET_PROFILE_CONTENT,
-        variables: { username: viewer.profile.username }
+        variables: { username }
       }
     ]
   });
