@@ -1,4 +1,13 @@
-import { Box, Button, Form, FormField, Image, Text, TextInput } from "grommet";
+import {
+  Box,
+  Button,
+  CheckBox,
+  Form,
+  FormField,
+  Image,
+  Text,
+  TextInput
+} from "grommet";
 import { useMutation } from "@apollo/client";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -34,6 +43,7 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
       setShowSavedMessage(true);
     }
   });
+  const [githubChecked, setGithubChecked] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -62,7 +72,8 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
           variables: {
             data: {
               ...event.value,
-              ...(file && { avatar: file })
+              ...(file && { avatar: file }),
+              ...(githubChecked && { github: githubChecked })
             },
             where: { username }
           }
@@ -154,6 +165,17 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
           }}
           type="file"
         />
+      </FormField>
+      <FormField htmlFor="github" id="github" name="github">
+        <Box pad={{ bottom: "small", top: "small" }}>
+          <CheckBox
+            checked={githubChecked}
+            label="Fetch updated profile page URL and pinned items from GitHub"
+            onChange={event => {
+              setGithubChecked(event.target.checked);
+            }}
+          />
+        </Box>
       </FormField>
       <Box align="center" direction="row" justify="end">
         {loading && <Loader size="medium" />}

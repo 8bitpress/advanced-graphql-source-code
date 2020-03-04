@@ -1,4 +1,5 @@
 import { DataSource } from "apollo-datasource";
+import { graphql } from "@octokit/graphql";
 import { UserInputError } from "apollo-server";
 import DataLoader from "dataloader";
 
@@ -26,7 +27,60 @@ class ProfilesDataSource extends DataSource {
     this.pagination = new Pagination(Profile);
   }
 
+  initialize(config) {
+    this.context = config.context;
+  }
+
   // UTILITIES
+
+  async _getPinnedItems(githubToken, username) {
+    const response = await graphql(
+      `
+      {
+        user(login: "${username}") {
+          pinnedItems(first: 6, types: [GIST, REPOSITORY]) {
+            edges {
+              node {
+                ... on Gist {
+                  id
+                  name
+                  description
+                  url
+                }
+                ... on Repository {
+                  id
+                  name
+                  description
+                  primaryLanguage {
+                    name
+                  }
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+      { headers: { authorization: `token ${githubToken}` } }
+    ).catch(() => null);
+
+    const { edges } = response.user.pinnedItems;
+
+    return edges.length
+      ? edges
+          .reduce((acc, curr) => {
+            const { primaryLanguage: lang } = curr.node;
+            curr.node.primaryLanguage = lang ? lang.name : null;
+            acc.push(curr.node);
+            return acc;
+          }, [])
+          .map(pin => {
+            const { id: githubId, ...rest } = pin;
+            return { githubId, ...rest };
+          })
+      : null;
+  }
 
   _getProfileSort(sortEnum) {
     let sort = {};
@@ -57,9 +111,19 @@ class ProfilesDataSource extends DataSource {
     if (picture && picture.includes("githubusercontent")) {
       profile.avatar = picture;
     } else {
-      const { email } = account;
-      const avatar = gravatarUrl(email, { default: "mm" });
+      const avatar = gravatarUrl(account.email, { default: "mm" });
       profile.avatar = avatar;
+    }
+
+    if (account.user_id.includes("github")) {
+      const { html_url } = account;
+      const username = html_url.split("/").pop();
+      const pinnedItems = await this._getPinnedItems(
+        account.identities[0].access_token,
+        username
+      );
+      profile.githubUrl = html_url;
+      profile.pinnedItems = pinnedItems;
     }
 
     const newProfile = new this.Profile(profile);
@@ -155,13 +219,13 @@ class ProfilesDataSource extends DataSource {
 
   async updateProfile(
     currentUsername,
-    { avatar, description, fullName, username }
+    { avatar, description, fullName, github, username }
   ) {
-    if (!avatar && !description && !fullName && !username) {
+    if (!avatar && !description && !fullName && !github && !username) {
       throw new UserInputError("You must supply some profile data to update.");
     }
 
-    let uploadedAvatar;
+    let uploadedAvatar, githubUrl, pinnedItems;
 
     if (avatar) {
       const profile = await this.Profile.findOne({
@@ -188,7 +252,26 @@ class ProfilesDataSource extends DataSource {
       });
     }
 
+    if (github) {
+      const accountId = this.context.user.sub;
+
+      if (!accountId.includes("github")) {
+        throw new UserInputError("Only GitHub accounts can fetch GitHub data.");
+      }
+
+      const account = await this.auth0.getUser({ id: accountId });
+      const { html_url } = account;
+      const username = html_url.split("/").pop();
+      githubUrl = html_url;
+      pinnedItems = await this._getPinnedItems(
+        account.identities[0].access_token,
+        username
+      );
+    }
+
     const data = {
+      ...(githubUrl && { githubUrl }),
+      ...(pinnedItems && { pinnedItems }),
       ...(uploadedAvatar && { avatar: uploadedAvatar.secure_url }),
       ...(description && { description }),
       ...(fullName && { fullName }),

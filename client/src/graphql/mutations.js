@@ -130,6 +130,14 @@ export const UPDATE_PROFILE = gql`
   ) {
     updateProfile(data: $data, where: $where) {
       ...basicProfile
+      githubUrl
+      pinnedItems {
+        id
+        description
+        name
+        primaryLanguage
+        url
+      }
     }
   }
   ${basicProfile}

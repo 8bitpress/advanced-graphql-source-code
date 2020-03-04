@@ -68,8 +68,10 @@ const typeDefs = gql`
     avatar: Upload
     "The updated user description."
     description: String
-    "The update full name of the user."
+    "The updated full name of the user."
     fullName: String
+    "Whether to re-fetch GitHub profile data from the GitHub GraphQL API."
+    github: Boolean
     "The updated unique username of the user."
     username: String
   }
