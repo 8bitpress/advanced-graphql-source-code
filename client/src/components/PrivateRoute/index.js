@@ -9,20 +9,26 @@ const PrivateRoute = ({ component: Component, render, ...rest }) => {
 
   const renderRoute = props => {
     let content = null;
+    let viewer;
+
+    if (viewerQuery && viewerQuery.data) {
+      viewer = viewerQuery.data.viewer;
+    }
 
     if (checkingSession) {
       content = <Loader centered />;
     } else if (
-      isAuthenticated() &&
+      isAuthenticated &&
       props.location.pathname !== "/settings/profile" &&
-      !viewerQuery.data.viewer.profile
+      viewer &&
+      !viewer.profile
     ) {
       content = <Redirect to="/settings/profile" />;
-    } else if (isAuthenticated() && render && viewerQuery) {
+    } else if (isAuthenticated && render && viewer) {
       content = render(props);
-    } else if (isAuthenticated() && viewerQuery) {
+    } else if (isAuthenticated && viewer) {
       content = <Component {...props} />;
-    } else if (!viewerQuery) {
+    } else if (!viewerQuery || !viewer) {
       content = <Redirect to="/" />;
     }
 

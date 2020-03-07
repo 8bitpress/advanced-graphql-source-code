@@ -10,10 +10,15 @@ import MainLayout from "../../layouts/MainLayout";
 
 const Index = () => {
   const { checkingSession, isAuthenticated, login, viewerQuery } = useAuth();
+  let viewer;
+
+  if (viewerQuery && viewerQuery.data) {
+    viewer = viewerQuery.data.viewer;
+  }
 
   if (checkingSession) {
     return <Loader centered />;
-  } else if (isAuthenticated() && viewerQuery) {
+  } else if (isAuthenticated && viewer) {
     return <Redirect to="/home" />;
   }
 

@@ -12,12 +12,12 @@ import MainLayout from "../../layouts/MainLayout";
 import SearchForm from "../../components/SearchForm";
 
 const Home = () => {
-  const value = useAuth();
+  const { viewerQuery } = useAuth();
 
   const { data, fetchMore, loading } = useQuery(GET_POSTS, {
     variables: {
       filter: {
-        followedBy: value.viewerQuery.data.viewer.profile.username,
+        followedBy: viewerQuery.data.viewer.profile.username,
         includeBlocked: false
       }
     }
