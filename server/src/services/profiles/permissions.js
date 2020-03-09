@@ -40,9 +40,7 @@ const permissions = shield(
       updateProfile: and(canEditOwnProfile, isEditingOwnProfile)
     }
   },
-  {
-    debug: process.env.NODE_ENV === "development" ? true : false
-  }
+  { debug: process.env.NODE_ENV === "development" }
 );
 
 export default permissions;

@@ -53,9 +53,7 @@ const permissions = shield(
       updateAccount: and(canEditOwnAccount, isEditingOwnAccount)
     }
   },
-  {
-    debug: process.env.NODE_ENV === "development" ? true : false
-  }
+  { debug: process.env.NODE_ENV === "development" }
 );
 
 export default permissions;

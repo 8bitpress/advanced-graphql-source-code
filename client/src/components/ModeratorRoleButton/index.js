@@ -19,10 +19,7 @@ const ModeratorRoleButton = ({ accountId, iconSize, isModerator }) => {
       }
       onClick={async () => {
         await changeAccountModeratorRole({
-          variables: {
-            data: { isModerator: !isModerator },
-            where: { id: accountId }
-          }
+          variables: { where: { id: accountId } }
         });
       }}
     />

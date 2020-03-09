@@ -65,15 +65,23 @@ class AccountsDataSource extends DataSource {
     return this.auth0.updateUser({ id }, { blocked: isBlocked });
   }
 
-  changeAccountModeratorRole(id, isModerator) {
-    let roles = isModerator ? ["moderator"] : ["author"];
-    let permissions = isModerator
-      ? this.authorPermissions.concat(this.moderatorPermissions)
-      : this.authorPermissions;
+  async changeAccountModeratorRole(id) {
+    const user = await this.auth0.getUser({ id });
+    const isModerator = user.app_metadata.roles.includes("moderator");
+    const roles = isModerator ? ["author"] : ["moderator"];
+    const permissions = isModerator
+      ? this.authorPermissions
+      : this.authorPermissions.concat(this.moderatorPermissions);
 
     return this.auth0.updateUser(
       { id },
-      { app_metadata: { groups: [], roles, permissions } }
+      {
+        app_metadata: {
+          groups: [],
+          roles,
+          permissions
+        }
+      }
     );
   }
 
@@ -91,13 +99,8 @@ class AccountsDataSource extends DataSource {
     }
 
     if (!email) {
-      try {
-        const user = await this.auth0.getUser({ id });
-        await getToken(user.email, password);
-      } catch (error) {
-        throw new UserInputError(error);
-      }
-
+      const user = await this.auth0.getUser({ id });
+      await getToken(user.email, password);
       return this.auth0.updateUser({ id }, { password: newPassword });
     }
 
@@ -107,12 +110,8 @@ class AccountsDataSource extends DataSource {
   // DELETE
 
   async deleteAccount(id) {
-    try {
-      await this.auth0.deleteUser({ id });
-      return true;
-    } catch {
-      return false;
-    }
+    await this.auth0.deleteUser({ id });
+    return true;
   }
 }
 

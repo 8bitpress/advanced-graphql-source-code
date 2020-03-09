@@ -51,14 +51,11 @@ const resolvers = {
     },
     changeAccountModeratorRole(
       parent,
-      { data: { isModerator }, where: { id } },
+      { where: { id } },
       { dataSources },
       info
     ) {
-      return dataSources.accountsAPI.changeAccountModeratorRole(
-        id,
-        isModerator
-      );
+      return dataSources.accountsAPI.changeAccountModeratorRole(id);
     },
     createAccount(
       parent,

@@ -15,11 +15,8 @@ export const BLOCK_ACCOUNT = gql`
 `;
 
 export const CHANGE_ACCOUNT_MODERATOR_ROLE = gql`
-  mutation CHANGE_ACCOUNT_MODERATOR_ROLE(
-    $data: ChangeAccountModeratorRoleInput!
-    $where: AccountWhereUniqueInput!
-  ) {
-    changeAccountModeratorRole(data: $data, where: $where) {
+  mutation CHANGE_ACCOUNT_MODERATOR_ROLE($where: AccountWhereUniqueInput!) {
+    changeAccountModeratorRole(where: $where) {
       id
       isModerator
     }

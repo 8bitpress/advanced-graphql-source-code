@@ -45,14 +45,6 @@ const typeDefs = gql`
   }
 
   """
-  Toggles the moderator role for an account.
-  """
-  input ChangeAccountModeratorRoleInput {
-    "Whether the moderator role should be applied to the account."
-    isModerator: Boolean!
-  }
-
-  """
   Provides data to create a new account.
   """
   input CreateAccountInput {
@@ -99,10 +91,7 @@ const typeDefs = gql`
     ): Account!
 
     "Escalates or deescalates moderator role permissions."
-    changeAccountModeratorRole(
-      data: ChangeAccountModeratorRoleInput!
-      where: AccountWhereUniqueInput!
-    ): Account!
+    changeAccountModeratorRole(where: AccountWhereUniqueInput!): Account!
 
     "Creates a new account."
     createAccount(data: CreateAccountInput!): Account!
