@@ -37,7 +37,7 @@ const typeDefs = gql`
   }
 
   """
-  Toggles a account's blocked status.
+  Toggles an account's blocked status.
   """
   input BlockAccountInput {
     "Whether the account should be blocked."
