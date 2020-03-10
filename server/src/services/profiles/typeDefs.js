@@ -26,7 +26,7 @@ const typeDefs = gql`
   Provides data to create a new user profile.
   """
   input CreateProfileInput {
-    "The new user's the unique Auth0 ID."
+    "The new user's unique Auth0 ID."
     accountId: ID!
     "A short bio or description about the user (max. 256 characters)."
     description: String

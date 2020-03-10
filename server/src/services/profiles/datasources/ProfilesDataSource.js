@@ -2,10 +2,10 @@ import { DataSource } from "apollo-datasource";
 import { graphql } from "@octokit/graphql";
 import { UserInputError } from "apollo-server";
 import DataLoader from "dataloader";
+import gravatarUrl from "gravatar-url";
 
 import { uploadStream } from "../../../lib/handleUploads";
 import getProjectionFields from "../../../lib/getProjectionFields";
-import gravatarUrl from "gravatar-url";
 import Pagination from "../../../lib/Pagination";
 
 class ProfilesDataSource extends DataSource {
@@ -99,13 +99,7 @@ class ProfilesDataSource extends DataSource {
   // CREATE
 
   async createProfile(profile) {
-    const account = await this.auth0
-      .getUser({ id: profile.accountId })
-      .catch(() => {
-        throw new UserInputError(
-          "Profile cannot be created for a user account that does not exist."
-        );
-      });
+    const account = await this.auth0.getUser({ id: profile.accountId });
     const { picture } = account;
 
     if (picture && picture.includes("githubusercontent")) {

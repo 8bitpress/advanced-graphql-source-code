@@ -123,7 +123,7 @@ class Pagination {
       .exec();
 
     if (!fromDoc) {
-      throw new Error(`No record found for ID '${fromCursorId}'`);
+      throw new UserInputError(`No record found for ID '${fromCursorId}'`);
     }
 
     filterWithCursor.$and.push({ [field]: { [operator]: fromDoc[field] } });
@@ -159,7 +159,7 @@ class Pagination {
         .exec();
 
       if (!fromDoc) {
-        throw new Error(`No record found for ID '${fromCursorId}'`);
+        throw new UserInputError(`No record found for ID '${fromCursorId}'`);
       }
 
       textSearchPipeline.push({
