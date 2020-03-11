@@ -37,14 +37,6 @@ const typeDefs = gql`
   }
 
   """
-  Toggles an account's blocked status.
-  """
-  input BlockAccountInput {
-    "Whether the account should be blocked."
-    isBlocked: Boolean!
-  }
-
-  """
   Provides data to create a new account.
   """
   input CreateAccountInput {
@@ -84,11 +76,8 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
-    "Blocks an account from authenticating."
-    blockAccount(
-      data: BlockAccountInput!
-      where: AccountWhereUniqueInput!
-    ): Account!
+    "Blocks or unblocks an account from authenticating."
+    changeAccountBlockedStatus(where: AccountWhereUniqueInput!): Account!
 
     "Escalates or deescalates moderator role permissions."
     changeAccountModeratorRole(where: AccountWhereUniqueInput!): Account!

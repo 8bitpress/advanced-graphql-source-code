@@ -47,7 +47,7 @@ const permissions = shield(
       accounts: canReadAnyAccount
     },
     Mutation: {
-      blockAccount: canBlockAccount,
+      changeAccountBlockedStatus: canBlockAccount,
       changeAccountModeratorRole: canPromoteAccount,
       deleteAccount: and(canEditOwnAccount, isEditingOwnAccount),
       updateAccount: and(canEditOwnAccount, isEditingOwnAccount)

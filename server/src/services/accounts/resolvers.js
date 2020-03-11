@@ -41,13 +41,13 @@ const resolvers = {
   },
 
   Mutation: {
-    blockAccount(
+    changeAccountBlockedStatus(
       parent,
-      { data: { isBlocked }, where: { id } },
+      { where: { id } },
       { dataSources },
       info
     ) {
-      return dataSources.accountsAPI.blockAccount(id, isBlocked);
+      return dataSources.accountsAPI.changeAccountBlockedStatus(id);
     },
     changeAccountModeratorRole(
       parent,

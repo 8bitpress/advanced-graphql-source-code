@@ -3,10 +3,12 @@ import { Halt } from "grommet-icons";
 import { useMutation } from "@apollo/client";
 import React from "react";
 
-import { BLOCK_ACCOUNT } from "../../graphql/mutations";
+import { CHANGE_ACCOUNT_BLOCKED_STATUS } from "../../graphql/mutations";
 
 const AccountBlockButton = ({ accountId, iconSize, isBlocked }) => {
-  const [blockAccount, { loading }] = useMutation(BLOCK_ACCOUNT);
+  const [changeAccountBlockedStatus, { loading }] = useMutation(
+    CHANGE_ACCOUNT_BLOCKED_STATUS
+  );
 
   return (
     <Button
@@ -19,11 +21,8 @@ const AccountBlockButton = ({ accountId, iconSize, isBlocked }) => {
         />
       }
       onClick={async () => {
-        await blockAccount({
-          variables: {
-            data: { isBlocked: !isBlocked },
-            where: { id: accountId }
-          }
+        await changeAccountBlockedStatus({
+          variables: { where: { id: accountId } }
         });
       }}
     />

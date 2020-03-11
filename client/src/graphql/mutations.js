@@ -2,12 +2,9 @@ import { gql } from "@apollo/client";
 
 import { basicProfile } from "./fragments";
 
-export const BLOCK_ACCOUNT = gql`
-  mutation BLOCK_ACCOUNT(
-    $data: BlockAccountInput!
-    $where: AccountWhereUniqueInput!
-  ) {
-    blockAccount(data: $data, where: $where) {
+export const CHANGE_ACCOUNT_BLOCKED_STATUS = gql`
+  mutation CHANGE_ACCOUNT_BLOCKED_STATUS($where: AccountWhereUniqueInput!) {
+    changeAccountBlockedStatus(where: $where) {
       id
       isBlocked
     }

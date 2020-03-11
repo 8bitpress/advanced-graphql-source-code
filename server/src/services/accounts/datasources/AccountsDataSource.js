@@ -61,8 +61,9 @@ class AccountsDataSource extends DataSource {
 
   // UPDATE
 
-  blockAccount(id, isBlocked) {
-    return this.auth0.updateUser({ id }, { blocked: isBlocked });
+  async changeAccountBlockedStatus(id) {
+    const { blocked } = await this.auth0.getUser({ id });
+    return this.auth0.updateUser({ id }, { blocked: !blocked });
   }
 
   async changeAccountModeratorRole(id) {
