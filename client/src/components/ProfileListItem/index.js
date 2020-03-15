@@ -85,7 +85,9 @@ const ProfileListItem = ({ profileData }) => {
         </Text>
       </Box>
       {viewerUsername !== username && (
-        <Box onClick={event => event.stopPropagation()}>
+        <Box onClick={event => {
+          event.stopPropagation();
+        }}>
           <Button
             disabled={loading}
             label={viewerIsFollowing ? "Unfollow" : "Follow"}

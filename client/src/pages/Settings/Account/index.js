@@ -68,6 +68,8 @@ const Account = () => {
                 data: { email },
                 where: { id: viewerId }
               }
+            }).catch(err => {
+              console.log(err);
             });
           }}
         >
@@ -114,6 +116,8 @@ const Account = () => {
                 data: { password, newPassword },
                 where: { id: viewerId }
               }
+            }).catch(err => {
+              console.log(err);
             });
           }}
         >

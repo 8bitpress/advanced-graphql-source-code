@@ -13,7 +13,7 @@ export const GET_POST = gql`
   query GET_POST($id: ID!, $repliesCursor: String) {
     post(id: $id) {
       ...basicPost
-      replies(first: 30, after: $repliesCursor) @connection(key: "replies") {
+      replies(first: 30, after: $repliesCursor) {
         edges {
           node {
             ...basicReply

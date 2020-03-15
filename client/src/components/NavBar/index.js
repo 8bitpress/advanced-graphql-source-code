@@ -8,9 +8,9 @@ import CreateContentForm from "../CreateContentForm";
 import Modal from "../Modal";
 
 const NavBar = () => {
+  const { logout, viewerQuery } = useAuth();
   const history = useHistory();
   const location = useLocation();
-  const { logout, viewerQuery } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -54,14 +54,17 @@ const NavBar = () => {
               items={[
                 {
                   label: "My Profile",
-                  onClick: () =>
+                  onClick: () => {
                     history.push(
                       `/profile/${viewerQuery.data.viewer.profile.username}`
-                    )
+                    );
+                  }
                 },
                 {
                   label: "Account Settings",
-                  onClick: () => history.push("/settings/account")
+                  onClick: () => {
+                    history.push("/settings/account");
+                  }
                 },
                 { label: "Logout", onClick: logout }
               ]}

@@ -21,9 +21,17 @@ const ContentBlockButton = ({ iconSize, id, isBlocked, isReply }) => {
       }
       onClick={() => {
         if (isReply) {
-          toggleReplyBlock({ variables: { where: { id } } });
+          toggleReplyBlock({
+            variables: { where: { id } } 
+          }).catch(err => {
+            console.log(err);
+          });
         } else {
-          togglePostBlock({ variables: { where: { id } } });
+          togglePostBlock({
+            variables: { where: { id } }
+          }).catch(err => {
+            console.log(err);
+          });
         }
       }}
     />

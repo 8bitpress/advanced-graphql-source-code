@@ -77,6 +77,8 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
             },
             where: { username }
           }
+        }).catch(err => {
+          console.error(err);
         });
       }}
     >

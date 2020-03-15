@@ -87,6 +87,8 @@ const CreateContentForm = ({ parentPostId }) => {
                   username
                 }
               }
+            }).catch(err => {
+              console.log(err)
             });
           } else {
             createPost({
@@ -97,6 +99,8 @@ const CreateContentForm = ({ parentPostId }) => {
                   username
                 }
               }
+            }).catch(err => {
+              console.log(err)
             });
           }
         }}

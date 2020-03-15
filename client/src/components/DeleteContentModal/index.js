@@ -75,9 +75,17 @@ const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
             label="Delete"
             onClick={() => {
               if (isReply) {
-                deleteReply({ variables: { where: { id } } });
+                deleteReply({ 
+                  variables: { where: { id } }
+                }).catch(err => {
+                  console.log(err)
+                });
               } else {
-                deletePost({ variables: { where: { id } } });
+                deletePost({ 
+                  variables: { where: { id } }
+                }).catch(err => {
+                  console.log(err)
+                });
               }
             }}
             primary
@@ -87,7 +95,9 @@ const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
       <Button
         a11yTitle="Delete"
         icon={<Trash color="status-critical" size={iconSize} />}
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          setModalOpen(true)
+        }}
       />
     </Box>
   );

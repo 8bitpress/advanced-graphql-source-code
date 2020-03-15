@@ -36,6 +36,8 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
           variables: {
             data: { accountId, ...event.value }
           }
+        }).catch(err => {
+          console.error(err);
         });
       }}
     >

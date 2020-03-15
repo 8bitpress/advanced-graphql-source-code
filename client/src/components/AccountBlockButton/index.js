@@ -20,9 +20,11 @@ const AccountBlockButton = ({ accountId, iconSize, isBlocked }) => {
           size={iconSize}
         />
       }
-      onClick={async () => {
-        await changeAccountBlockedStatus({
+      onClick={() => {
+        changeAccountBlockedStatus({
           variables: { where: { id: accountId } }
+        }).catch(err => {
+          console.log(err);
         });
       }}
     />

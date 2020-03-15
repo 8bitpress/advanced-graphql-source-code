@@ -73,7 +73,14 @@ const ContentListItem = ({ contentData }) => {
           <Text as="p">
             <Text color="dark-3">Replying to </Text>
             <Link to={`/profile/${parentPostAuthor.username}`}>
-              <Anchor as="span">@{parentPostAuthor.username}</Anchor>
+              <Anchor
+                as="span"
+                onClick={event => {
+                  event.stopPropagation();
+                }}
+              >
+                @{parentPostAuthor.username}
+              </Anchor>
             </Link>
           </Text>
         )}

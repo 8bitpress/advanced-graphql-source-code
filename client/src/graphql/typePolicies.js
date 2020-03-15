@@ -1,4 +1,11 @@
 export default {
+  Post: {
+    fields: {
+      replies: {
+        keyArgs: []
+      }
+    }
+  },
   Profile: {
     fields: {
       following: {

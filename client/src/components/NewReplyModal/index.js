@@ -13,9 +13,16 @@ const NewReplyModal = ({ iconSize, postData, showButtonLabel }) => {
   const { author, createdAt, id, text } = postData;
 
   return (
-    <Box direction="row" onClick={event => event.stopPropagation()}>
+    <Box
+      direction="row"
+      onClick={event => {
+        event.stopPropagation();
+      }}
+    >
       <Modal
-        handleClose={() => setModalOpen(false)}
+        handleClose={() => {
+          setModalOpen(false);
+        }}
         isOpen={modalOpen}
         title="Create a New Reply"
         width="large"

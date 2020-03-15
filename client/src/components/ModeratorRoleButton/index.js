@@ -17,9 +17,11 @@ const ModeratorRoleButton = ({ accountId, iconSize, isModerator }) => {
       icon={
         <UserAdmin color={isModerator ? "brand" : "dark-4"} size={iconSize} />
       }
-      onClick={async () => {
-        await changeAccountModeratorRole({
+      onClick={() => {
+        changeAccountModeratorRole({
           variables: { where: { id: accountId } }
+        }).catch(err => {
+          console.log(err);
         });
       }}
     />
