@@ -28,13 +28,13 @@ const createApolloClient = getToken => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ extensions: { serviceName }, message, path }) =>
-        console.log(
+        console.error(
           `[GraphQL error]: Message: ${message}, Service: ${serviceName}, Path: ${path[0]}`
         )
       );
     }
     if (networkError) {
-      console.log(`[Network error]: ${networkError}`);
+      console.error(`[Network error]: ${networkError}`);
     }
   });
   const persistedQueryLink = createPersistedQueryLink();

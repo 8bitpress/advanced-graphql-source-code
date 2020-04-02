@@ -184,7 +184,7 @@ const CreateContentForm = ({ parentPostId }) => {
           <Button
             disabled={loading}
             label="Publish"
-            margin={{ bottom: "xsmall", left: "xsmall" }}
+            margin={{ bottom: "xsmall", left: "xsmall", right: "xsmall" }}
             primary
             type="submit"
           />
