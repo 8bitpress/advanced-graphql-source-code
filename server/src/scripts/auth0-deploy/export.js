@@ -3,7 +3,7 @@
 
 import { dump } from "auth0-deploy-cli";
 
-(async () => {
+(() => {
   const config = {
     AUTH0_API_MAX_RETRIES: 10,
     AUTH0_CLIENT_ID: process.env.A0DEPLOY_CLIENT_ID_DEV,

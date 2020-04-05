@@ -58,7 +58,9 @@ const DeleteContentModal = ({ iconSize, id, isReply, parentPostId }) => {
   return (
     <Box direction="row" onClick={event => event.stopPropagation()}>
       <Modal
-        handleClose={() => setModalOpen(false)}
+        handleClose={() => {
+          setModalOpen(false)
+        }}
         isOpen={modalOpen}
         title="Please Confirm"
         width="medium"

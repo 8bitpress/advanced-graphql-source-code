@@ -64,7 +64,7 @@ const typeDefs = gql`
   Provides data to update an existing profile.
   """
   input UpdateProfileInput {
-    "The updated avatar data containing the stream, filename, mimetype, and encoding."
+    "The updated avatar with the stream, filename, mimetype, and encoding."
     avatar: Upload
     "The updated user description."
     description: String

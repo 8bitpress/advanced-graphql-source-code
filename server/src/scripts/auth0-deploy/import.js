@@ -3,7 +3,7 @@
 
 import { deploy } from "auth0-deploy-cli";
 
-(async () => {
+(() => {
   const config = {
     AUTH0_ALLOW_DELETE: false,
     AUTH0_API_MAX_RETRIES: 10,

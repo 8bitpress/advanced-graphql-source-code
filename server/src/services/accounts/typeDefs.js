@@ -4,7 +4,7 @@ const typeDefs = gql`
   # SCALARS
 
   """
-  An ISO-8601-encoded UTC date string...
+  An ISO 8601-encoded UTC date string...
   """
   scalar DateTime
 

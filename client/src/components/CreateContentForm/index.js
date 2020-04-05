@@ -119,7 +119,9 @@ const CreateContentForm = ({ parentPostId }) => {
             </RequiredLabel>
           }
           name="text"
-          onInput={event => setContentCharCount(event.target.value.length)}
+          onInput={event => {
+            setContentCharCount(event.target.value.length)
+          }}
           placeholder={`Write your ${parentPostId ? "reply" : "post"}`}
           required
           validate={fieldData => {

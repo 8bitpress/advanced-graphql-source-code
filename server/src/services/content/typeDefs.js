@@ -4,7 +4,7 @@ const typeDefs = gql`
   # SCALARS
 
   """
-  An ISO-8601-encoded UTC date string.
+  An ISO 8601-encoded UTC date string.
   """
   scalar DateTime
 
@@ -77,7 +77,7 @@ const typeDefs = gql`
   Provides data to create a post.
   """
   input CreatePostInput {
-    "The post's media data containing the stream, filename, mimetype, and encoding."
+    "The post's media with the stream, filename, mimetype, and encoding."
     media: Upload
     "The body content of the post (max. 256 characters)."
     text: String!
@@ -89,7 +89,7 @@ const typeDefs = gql`
   Provides data to create a reply to a post.
   """
   input CreateReplyInput {
-    "The reply's media data containing the stream, filename, mimetype, and encoding."
+    "The reply's media with the stream, filename, mimetype, and encoding."
     media: Upload
     "The unique MongoDB document ID if the parent post."
     postId: ID!

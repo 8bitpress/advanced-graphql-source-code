@@ -16,7 +16,9 @@ const DeleteAccountModal = ({ accountId }) => {
   return (
     <Box direction="row">
       <Modal
-        handleClose={() => setModalOpen(false)}
+        handleClose={() => {
+          setModalOpen(false)
+        }}
         isOpen={modalOpen}
         title="Please Confirm"
         width="medium"
