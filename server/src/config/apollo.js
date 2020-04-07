@@ -1,33 +1,12 @@
-import { ApolloServer } from "apollo-server-express";
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
+import { ApolloServer } from "apollo-server-express";
 import { RedisCache } from "apollo-server-cache-redis";
 import depthLimit from "graphql-depth-limit";
 import waitOn from "wait-on";
 
 import { readNestedFileStreams } from "../lib/handleUploads";
-import accountsTypeDefs from "../services/accounts/typeDefs";
-import profilesTypeDefs from "../services/profiles/typeDefs";
-import contentTypeDefs from "../services/content/typeDefs";
 
 export default async function() {
-  const serviceDefinitions = [
-    {
-      name: "accounts",
-      url: process.env.ACCOUNTS_SERVICE_URL,
-      typeDefs: accountsTypeDefs
-    },
-    {
-      name: "profiles",
-      url: process.env.PROFILES_SERVICE_URL,
-      typeDefs: profilesTypeDefs
-    },
-    {
-      name: "content",
-      url: process.env.CONTENT_SERVICE_URL,
-      typeDefs: contentTypeDefs
-    }
-  ];
-
   const options = {
     resources: [
       `tcp:${process.env.ACCOUNTS_SERVICE_PORT}`,
@@ -41,7 +20,11 @@ export default async function() {
   });
 
   const gateway = new ApolloGateway({
-    serviceList: serviceDefinitions,
+    serviceList: [
+      { name: "accounts", url: process.env.ACCOUNTS_SERVICE_URL },
+      { name: "profiles", url: process.env.PROFILES_SERVICE_URL },
+      { name: "content", url: process.env.CONTENT_SERVICE_URL }
+    ],
     buildService({ name, url }) {
       return new RemoteGraphQLDataSource({
         url,
@@ -53,12 +36,7 @@ export default async function() {
           );
         }
       });
-    },
-    ...(process.env.NODE_ENV === "development" && {
-      experimental_updateServiceDefinitions(_config) {
-        return { serviceDefinitions, isNewSchema: true };
-      }
-    })
+    }
   });
 
   return new ApolloServer({
