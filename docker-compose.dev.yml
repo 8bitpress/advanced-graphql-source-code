@@ -16,4 +16,5 @@ services:
       target: base
     ports:
       - 3000:3000
+    stdin_open: true
     command: npm start
