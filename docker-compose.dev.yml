@@ -10,6 +10,8 @@ services:
   graphql:
     build:
       target: base
+    ports:
+      - 4000:4000
     command: pm2-dev process.yml
   web:
     build:

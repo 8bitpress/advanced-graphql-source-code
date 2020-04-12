@@ -23,8 +23,6 @@ services:
       - 4001
       - 4002
       - 4003
-    ports:
-      - 4000:4000
     volumes:
       - ./server:/home/node/app
       - /home/node/app/node_modules

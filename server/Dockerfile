@@ -36,3 +36,6 @@ FROM base AS production
 
 # Remove unneeded development dependencies
 RUN npm prune --production
+
+# Expose port 4000 internally
+EXPOSE 4000
