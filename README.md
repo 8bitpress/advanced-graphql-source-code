@@ -4,4 +4,6 @@ This repo contains the completed files for the app built throughout the _Advance
 
 Learn more about the book here: https://8bit.press/book/advanced-graphql
 
+---
+
 Copyright (c) 2020 8-Bit Press Inc.
