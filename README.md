@@ -1,6 +1,6 @@
 # Advanced GraphQL with Apollo & React (Source Code)
 
-This repo contains the completed files for the app built throughout the _Advanced GraphQL with Apollo & React_ book from 8-Bit Press.
+This repo contains the completed files for the full-stack JavaScript application built throughout the _Advanced GraphQL with Apollo & React_ book from 8-Bit Press.
 
 **[Learn more about the book and download a sample chapter here.](https://8bit.press/book/advanced-graphql)**
 
