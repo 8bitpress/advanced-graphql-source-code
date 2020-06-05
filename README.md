@@ -66,6 +66,10 @@ Users who sign up for DevChirps with a GitHub account can showcase pinned repos 
 
 Mandi Wise discovered her love for building web things 20 years ago. She spent the last five years sharing that passion by teaching software development to others, including how to build web and mobile applications powered by GraphQL APIs. You can find her on [GitHub](https://github.com/mandiwise) and [Twitter](https://twitter.com/mandiwise).
 
-## Feedback & Questions
+## Questions & Feedback
 
 Email [hello@8bit.press](mailto:hello@8bit.press) if you have any questions or feedback about this book.
+
+---
+
+Copyright © 2020 8-Bit Press Inc.
