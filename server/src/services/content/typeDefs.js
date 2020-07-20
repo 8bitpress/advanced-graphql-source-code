@@ -119,7 +119,7 @@ const typeDefs = gql`
     to: String
   }
 
-  # TYPES
+  # OBJECTS
 
   """
   Information about pagination in a connection.

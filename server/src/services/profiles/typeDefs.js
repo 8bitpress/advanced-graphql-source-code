@@ -76,7 +76,7 @@ const typeDefs = gql`
     username: String
   }
 
-  # TYPES
+  # OBJECTS
 
   extend type Account @key(fields: "id") {
     id: ID! @external

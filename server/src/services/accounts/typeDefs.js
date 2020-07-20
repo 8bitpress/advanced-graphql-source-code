@@ -8,7 +8,7 @@ const typeDefs = gql`
   """
   scalar DateTime
 
-  # TYPES
+  # OBJECTS
 
   """
   An account is an Auth0 user that provides authentication details.
