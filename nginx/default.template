@@ -10,6 +10,7 @@ server {
     listen 80;
     server_name ${DOMAIN};
     server_tokens off;
+    client_max_body_size 5M;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
