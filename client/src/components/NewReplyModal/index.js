@@ -27,7 +27,7 @@ const NewReplyModal = ({ iconSize, postData, showButtonLabel }) => {
         title="Create a New Reply"
         width="large"
       >
-        <Box margin={{ vertical: "small" }}>
+        <Box height={{ min: "132px" }} margin={{ vertical: "small" }}>
           <Box direction="row">
             <Box
               height="48px"
