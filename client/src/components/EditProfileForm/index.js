@@ -19,15 +19,19 @@ import Loader from "../Loader";
 import RequiredLabel from "../RequiredLabel";
 
 const EditProfileForm = ({ profileData, updateViewer }) => {
-  const { avatar, description, fullName, username } = profileData;
   const validFormats = ["image/jpeg", "image/jpg", "image/png"];
 
-  const avatarInput = useRef();
+  const [description, setDescription] = useState(profileData.description || "");
+  const [fullName, setFullName] = useState(profileData.fullName || "");
+  const [username, setUsername] = useState(profileData.username);
   const [descCharCount, setDescCharCount] = useState(
-    (description && description.length) || 0
+    (profileData.description && profileData.description.length) || 0
   );
-  const [imageFile, setImageFile] = useState();
   const [showSavedMessage, setShowSavedMessage] = useState(false);
+  const avatarInput = useRef();
+  const [imageFile, setImageFile] = useState();
+  const [githubChecked, setGithubChecked] = useState(false);
+
   const [updateProfile, { error, loading }] = useMutation(UPDATE_PROFILE, {
     update: (cache, { data: { updateProfile } }) => {
       const { viewer } = cache.readQuery({ query: GET_VIEWER });
@@ -43,7 +47,6 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
       setShowSavedMessage(true);
     }
   });
-  const [githubChecked, setGithubChecked] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,7 +66,7 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
           "Username is already in use"
       }}
       messages={{ required: "Required" }}
-      onSubmit={event => {
+      onSubmit={() => {
         const {
           files: [file]
         } = avatarInput.current;
@@ -71,11 +74,13 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
         updateProfile({
           variables: {
             data: {
-              ...event.value,
+              description,
+              fullName,
+              username,
               ...(file && { avatar: file }),
               ...(githubChecked && { github: githubChecked })
             },
-            where: { username }
+            where: { username: profileData.username }
           }
         }).catch(err => {
           console.error(err);
@@ -87,6 +92,9 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
         id="username"
         label={<RequiredLabel>Username</RequiredLabel>}
         name="username"
+        onInput={event => {
+          setUsername(event.target.value);
+        }}
         placeholder="Pick a unique username"
         required
         validate={fieldData => {
@@ -94,15 +102,18 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
             return "Alphanumeric characters only (use underscores for whitespace)";
           }
         }}
-        value={username || ""}
+        value={username}
       />
       <FormField
         htmlFor="fullName"
         id="fullName"
         label="Full Name"
         name="fullName"
+        onInput={event => {
+          setFullName(event.target.value);
+        }}
         placeholder="Add your full name"
-        value={fullName || ""}
+        value={fullName}
       />
       <FormField
         htmlFor="description"
@@ -115,14 +126,17 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
           />
         }
         name="description"
-        onInput={event => setDescCharCount(event.target.value.length)}
+        onInput={event => {
+          setDescription(event.target.value);
+          setDescCharCount(event.target.value.length);
+        }}
         placeholder="Write short bio or description about yourself"
         validate={fieldData => {
           if (fieldData && fieldData.length > 256) {
             return "256 maximum character count exceeded";
           }
         }}
-        value={description || ""}
+        value={description}
       />
       <FormField
         htmlFor="avatar"
@@ -151,7 +165,7 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
         >
           <Image
             fit="cover"
-            src={imageFile || avatar}
+            src={imageFile || profileData.avatar}
             alt={`${fullName} profile image`}
           />
         </Box>

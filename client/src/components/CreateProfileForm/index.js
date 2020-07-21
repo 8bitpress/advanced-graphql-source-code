@@ -72,7 +72,9 @@ const CreateProfileForm = ({ accountId, updateViewer }) => {
           />
         }
         name="description"
-        onInput={event => setDescCharCount(event.target.value.length)}
+        onInput={event => {
+          setDescCharCount(event.target.value.length);
+        }}
         placeholder="Write short bio or description about yourself"
         validate={fieldData => {
           if (fieldData && fieldData.length > 256) {
