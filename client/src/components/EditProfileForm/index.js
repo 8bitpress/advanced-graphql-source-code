@@ -182,17 +182,19 @@ const EditProfileForm = ({ profileData, updateViewer }) => {
           type="file"
         />
       </FormField>
-      <FormField htmlFor="github" id="github" name="github">
-        <Box pad={{ bottom: "small", top: "small" }}>
-          <CheckBox
-            checked={githubChecked}
-            label="Fetch updated profile page URL and pinned items from GitHub"
-            onChange={event => {
-              setGithubChecked(event.target.checked);
-            }}
-          />
-        </Box>
-      </FormField>
+      {profileData.githubUrl && (
+        <FormField htmlFor="github" id="github" name="github">
+          <Box pad={{ bottom: "small", top: "small" }}>
+            <CheckBox
+              checked={githubChecked}
+              label="Fetch updated profile page URL and pinned items from GitHub"
+              onChange={event => {
+                setGithubChecked(event.target.checked);
+              }}
+            />
+          </Box>
+        </FormField>
+      )}
       <Box align="center" direction="row" justify="end">
         {loading && <Loader size="medium" />}
         {showSavedMessage && <Text as="p">Changes saved!</Text>}
