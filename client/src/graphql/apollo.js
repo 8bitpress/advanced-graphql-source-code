@@ -7,7 +7,7 @@ import {
 import { createPersistedQueryLink } from "apollo-link-persisted-queries";
 import { createUploadLink } from "apollo-upload-client";
 import { onError } from "apollo-link-error";
-import { setContext } from "@apollo/link-context";
+import { setContext } from "@apollo/client/link/context";
 import React from "react";
 
 import { useAuth } from "../context/AuthContext";
