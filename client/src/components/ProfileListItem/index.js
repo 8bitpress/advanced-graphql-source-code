@@ -31,7 +31,7 @@ const ProfileListItem = ({ profileData }) => {
   const update = cache => {
     if (params.username) {
       updateProfileContentFollowing(cache, id, params.username);
-    } else if (location.pathname === "/search/") {
+    } else if (location.pathname === "/search") {
       const { text } = queryString.parse(location.search);
       updateSearchProfilesFollowing(cache, id, text);
     }
