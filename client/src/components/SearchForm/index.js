@@ -2,7 +2,7 @@ import { Box, Button, Form, FormField, Select } from "grommet";
 import { Search } from "grommet-icons";
 import { useHistory, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import React from "react";
+import React, { useState } from "react";
 
 const SearchForm = () => {
   const options = [
@@ -14,11 +14,19 @@ const SearchForm = () => {
   const location = useLocation();
   const qsValues = queryString.parse(location.search);
 
+  const [text, setText] = useState((qsValues && qsValues.text) || "");
+  const [type, setType] = useState(
+    (qsValues &&
+      qsValues.type &&
+      options.find(option => option.value === qsValues.type)) ||
+      ""
+  );
+
   return (
     <Form
       messages={{ required: "Required" }}
-      onSubmit={({ value: { searchText, searchType } }) => {
-        history.push(`/search/?type=${searchType.value}&text=${searchText}`);
+      onSubmit={() => {
+        history.push(`/search?type=${type.value}&text=${text}`);
       }}
     >
       <Box align="start" direction="row" justify="between">
@@ -27,9 +35,12 @@ const SearchForm = () => {
             a11yTitle="Search Text"
             id="searchText"
             name="searchText"
+            onInput={event => {
+              setText(event.target.value);
+            }}
             placeholder="Search DevChirps..."
             required
-            value={(qsValues && qsValues.text) || ""}
+            value={text}
           />
         </Box>
         <Box margin={{ right: "small" }}>
@@ -39,14 +50,13 @@ const SearchForm = () => {
             id="searchType"
             labelKey="label"
             name="searchType"
+            onChange={({ option }) => {
+              setType(option);
+            }}
             options={options}
             plain
             required
-            value={
-              qsValues &&
-              qsValues.type &&
-              options.find(option => option.value === qsValues.type)
-            }
+            value={type}
             valueKey="value"
           />
         </Box>
