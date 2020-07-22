@@ -26,7 +26,7 @@ Bloating resolver functions with data-fetching logic can be messy and often isn'
 
 Relay-style pagination is a popular choice for paginating results in a GraphQL API, but implementing its spec from scratch isn't for the faint of heart! We'll build out a helper class step-by-step to paginate documents retrieved from MongoDB using the Relay pagination algorithm.
 
-### Apollo Client 3.0 with React Hooks
+### Apollo Client 3 with React Hooks
 
 We'll take a modern approach to build a React client app using function components only along with a variety of different hooks, including Apollo Client's `useQuery` and `useMutation` hooks.
 
