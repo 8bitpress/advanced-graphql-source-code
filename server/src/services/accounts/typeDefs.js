@@ -19,7 +19,7 @@ const typeDefs = gql`
     "The date and time the account was created."
     createdAt: DateTime!
     "The email associated with the account (must be unique)."
-    email: String!
+    email: String
     "Whether the account is blocked."
     isBlocked: Boolean
     "Whether the account has a moderator role."
