@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
 
         if (window.location.search.includes("code=")) {
           await client.handleRedirectCallback();
-          history.replace("/home");
+          history.replace({ pathname: "/home", search: "" });
         }
 
         const authenticated = await client.isAuthenticated();
