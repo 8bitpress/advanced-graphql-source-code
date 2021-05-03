@@ -64,7 +64,7 @@ Users who sign up for DevChirps with a GitHub account can showcase pinned repos 
 
 ## About the Author
 
-Mandi Wise discovered her love for building web things 20 years ago. She spent the last five years sharing that passion by teaching software development to others, including how to build web and mobile applications powered by GraphQL APIs. You can find her on [GitHub](https://github.com/mandiwise) and [Twitter](https://twitter.com/mandiwise).
+Mandi Wise discovered her love for building web things 20 years ago. She spent the last six years sharing that passion by teaching software development to others, including how to build web and mobile applications powered by GraphQL APIs. She currently works as a Solutions Architect for [Apollo Graph Inc.](https://www.apollographql.com/) You can find her on [GitHub](https://github.com/mandiwise) and [Twitter](https://twitter.com/mandiwise).
 
 ## Questions & Feedback
 
